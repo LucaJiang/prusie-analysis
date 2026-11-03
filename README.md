@@ -44,14 +44,16 @@ analyses and numerical claims, comparing decoded JSON and TSV values exactly.
 It also authenticates the frozen inputs. `make tables` writes numerical outputs
 to `build/tables/`. `make all` redraws eight manuscript
 figures into `04_figures_tables/figures/`. No R, prusie, association data or fitting
-is needed. CI runs Level A with Python 3.12.
+is needed. The architecture PDF uses the system libraries Cairo and librsvg
+(on Debian/Ubuntu: `libcairo2`, `librsvg2-2`); summary checks need only Python.
+CI runs Level A with Python 3.12.
 
 | Manuscript output | Producing script in `04_figures_tables/` | Inputs in `03_results/` |
 | --- | --- | --- |
 | Figure 1: runtime and memory | `make_figure1.py` | `benchmark_records.jsonl.gz` |
+| Supplement: software architecture | `make_architecture.py` | `architecture.svg` |
 | Figure 2: report | `make_report_figure_compact.py` | `report_snippets/` |
 | Supplement: alpha/PIP vs variants and iterations; fitting time | `make_agreement_fitting_figures.py` | `benchmark_records.jsonl.gz` |
-| Supplement: speed-up distribution | `make_speedup_figure.py` | `benchmark_primary.tsv` |
 | Supplement: nested windows | `make_supplement_figures.py` | `benchmark_windows.tsv` |
 | Supplement: full report figure | `make_report_figure.py` | `report_snippets/` |
 | Dataset, timing, numerical consistency and memory tables; main-text numerical summaries | `summarize_benchmark.py`, `manuscript_numbers.py` | records, `primary_case_manifest.tsv`, `cs_membership.tsv` |

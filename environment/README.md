@@ -1,6 +1,8 @@
 # Environments
 
 Level A uses CPython 3.12 with `requirements-level-a.txt`. It needs no prusie or R.
+Rendering `architecture.svg` also uses system libraries Cairo and librsvg
+(`libcairo2` and `librsvg2-2` on Debian/Ubuntu). No Python binding is required.
 The summary environment uses NumPy 2.2.6; the benchmark environment used NumPy
 1.26.4. Keep these environments separate: sorting ties and least-squares rounding
 can differ between NumPy versions.

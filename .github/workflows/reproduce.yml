@@ -16,4 +16,5 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install -r environment/requirements-level-a.txt
       - run: make check
+      - run: sudo apt-get update && sudo apt-get install -y libcairo2 librsvg2-2
       - run: make figures
