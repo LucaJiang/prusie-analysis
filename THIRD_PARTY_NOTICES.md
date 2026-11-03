@@ -1,12 +1,11 @@
 # Third-party notices
 
 This analysis code is GPL-3.0-or-later; the full license is in LICENSE.
-The archived R source excerpts and report screenshots derive from susieR.
 No association statistics or individual genotypes are redistributed.
 
 ### susieR
 
-Gaussian SuSiE and SuSiE-RSS code is adapted from
+The archived R source files under `02_benchmark/archive/` are copies of
 [susieR 0.16.6](https://github.com/stephenslab/susieR/tree/8e56a8e038e989856d106d9ca5175cc664fea9d2),
 commit `8e56a8e038e989856d106d9ca5175cc664fea9d2`, under BSD-3-Clause:
 
