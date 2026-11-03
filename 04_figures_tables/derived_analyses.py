@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from scipy.stats import spearmanr
 
 DATA = Path(os.environ.get("ANALYSIS_INPUT", Path(__file__).resolve().parents[1] / "03_results"))
 OUT = Path(os.environ.get("ANALYSIS_OUTPUT", DATA))
@@ -91,9 +92,8 @@ def column_classes(primary):
         p = np.array([int(c["p"]) for c in rows])
         ratio = np.array([float(by_key[c["case_key"]]["fitting_speedup"]) for c in rows])
         m = (g >= 0.35) & (g < 0.45) & (p >= 2000) & (p <= 6000)
-        rank = lambda v: np.argsort(np.argsort(v))
         out[panel] = {"cases": len(rows), "median_G_over_p": float(np.median(g)),
-                      "spearman_p_G_over_p": float(np.corrcoef(rank(p), rank(g))[0, 1]),
+                      "spearman_p_G_over_p": float(spearmanr(p, g).statistic),
                       "matched_bin_cases": int(m.sum()),
                       "matched_bin_median_fitting_ratio": float(np.median(ratio[m]))}
         if panel == "eQTL":

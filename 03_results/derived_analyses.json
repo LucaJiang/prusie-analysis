@@ -173,14 +173,14 @@
     "GWAS": {
       "cases": 200,
       "median_G_over_p": 0.34377473669614367,
-      "spearman_p_G_over_p": 0.3035220880522013,
+      "spearman_p_G_over_p": 0.3033716755852166,
       "matched_bin_cases": 45,
       "matched_bin_median_fitting_ratio": 49.16223456943351
     },
     "eQTL": {
       "cases": 708,
       "median_G_over_p": 0.5984620321390803,
-      "spearman_p_G_over_p": 0.2611918903020462,
+      "spearman_p_G_over_p": 0.26112570100947297,
       "matched_bin_cases": 55,
       "matched_bin_median_fitting_ratio": 48.207648172177194,
       "tertiles": [
