@@ -1,0 +1,561 @@
+{
+  "state": "PASS",
+  "cases": 6,
+  "records_sha256": "ab6eb6e424c06b9ce734aadbf2e58176750a6bc4e0b7ffce171a2796f51f3f9c",
+  "windows_table_sha256": "de1e94bcb18e8f456b0bf566173c9637a4ba0e8277493835e256001f5f903913",
+  "checks": [
+    "Original case result and every referenced payload digest",
+    "Six exact first-p variant and z prefixes of the same frozen locus",
+    "Matching input parameters, one thread, overwrite disabled",
+    "LD dimensions and validated symmetry/allele/sample order",
+    "Warmup excluded and first three retained complete/fitting calls",
+    "Independent stdlib medians and linear-interpolated quartiles",
+    "Seconds/bytes and MiB/GiB conversion",
+    "Raw process HWM rather than another measurement source",
+    "Final full-precision alpha and PIP arrays recomputed",
+    "Iteration/convergence counts and all outliers retained"
+  ],
+  "interpretation": "Nested one-locus subsets, not independent regions or constant-sweep complexity measurements",
+  "windows": [
+    {
+      "case_key": "window_500",
+      "case_id": "T2D_chr10_61277948_71054950",
+      "p": 500,
+      "host": "cpunode-029",
+      "job_id": "700793",
+      "original_result_sha256": "b2c12638f7e328c918601a0edf777a1406a69dd1f9f0b55d355e4172af32a817",
+      "ld_sha256": "ef93c8561e77ca47ccb3dc90d91da0447d0da4b44ffb20a21fa2d8f987b4b0c2",
+      "z_sha256": "a943427a135869df45c3f93fce82137ab6e0dd6c51a5e9b4d79e55ac6ed6b75b",
+      "variant_ids_sha256": "105482aed9d5125bdb8d206cf1647673c680f79d54dbe294001ab0e6dda4c996",
+      "parameters": {
+        "L": 10,
+        "check_input": false,
+        "check_null_threshold": 0.0,
+        "check_prior": true,
+        "coverage": 0.95,
+        "estimate_prior_method": "optim",
+        "estimate_prior_variance": true,
+        "estimate_residual_variance": false,
+        "max_iter": 100,
+        "min_abs_corr": 0.5,
+        "n": 486019,
+        "n_purity": 19221,
+        "null_weight": 0.0,
+        "prior_tol": 1e-09,
+        "r_tol": 1e-08,
+        "refine": false,
+        "residual_variance": 1.0,
+        "scaled_prior_variance": 0.2,
+        "standardize": true,
+        "tol": 0.001
+      },
+      "backends": {
+        "susieR": {
+          "peak_rss_bytes": 298463232,
+          "process_calls": 4,
+          "niter": 14,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              0.465386384166777,
+              0.461443478241563,
+              0.462689414620399
+            ],
+            "median": 0.462689414620399,
+            "q1": 0.462066446430981,
+            "q3": 0.46403789939358797
+          },
+          "fitting": {
+            "retained_seconds": [
+              0.462364483624697,
+              0.458341424353421,
+              0.459804030135274
+            ],
+            "median": 0.459804030135274,
+            "q1": 0.4590727272443475,
+            "q3": 0.4610842568799855
+          }
+        },
+        "prusie": {
+          "peak_rss_bytes": 138108928,
+          "process_calls": 4,
+          "niter": 14,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              0.010498986,
+              0.010671542,
+              0.010548479
+            ],
+            "median": 0.010548479,
+            "q1": 0.0105237325,
+            "q3": 0.0106100105
+          },
+          "fitting": {
+            "retained_seconds": [
+              0.009655107,
+              0.009730469,
+              0.009603221
+            ],
+            "median": 0.009655107,
+            "q1": 0.009629163999999999,
+            "q3": 0.009692788
+          }
+        }
+      },
+      "alpha_max_abs_error": 1.1034456482220123e-09,
+      "pip_max_abs_error": 5.757894161462218e-11,
+      "paired_complete_time_ratio": 43.86314032766231
+    },
+    {
+      "case_key": "window_1000",
+      "case_id": "T2D_chr10_61277948_71054950",
+      "p": 1000,
+      "host": "cpunode-029",
+      "job_id": "700793",
+      "original_result_sha256": "4f4ced8acca176d90ce41f27a223673f15c1c0695b34ab3247aeda86100e348d",
+      "ld_sha256": "7936cf4ad20fb1dae7e5ab7999b61d9a6c306b326ca46eb0ad9769e2428fbf65",
+      "z_sha256": "ab105595d34641fb123bfe02d8c43cfee296707c60cc33552762a98d52bd3b65",
+      "variant_ids_sha256": "94ab1a93b4b252823cff4583cd23a56c88433216f39664dbe89d0b6819977228",
+      "parameters": {
+        "L": 10,
+        "check_input": false,
+        "check_null_threshold": 0.0,
+        "check_prior": true,
+        "coverage": 0.95,
+        "estimate_prior_method": "optim",
+        "estimate_prior_variance": true,
+        "estimate_residual_variance": false,
+        "max_iter": 100,
+        "min_abs_corr": 0.5,
+        "n": 486019,
+        "n_purity": 19221,
+        "null_weight": 0.0,
+        "prior_tol": 1e-09,
+        "r_tol": 1e-08,
+        "refine": false,
+        "residual_variance": 1.0,
+        "scaled_prior_variance": 0.2,
+        "standardize": true,
+        "tol": 0.001
+      },
+      "backends": {
+        "susieR": {
+          "peak_rss_bytes": 371286016,
+          "process_calls": 4,
+          "niter": 15,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              1.22624018322676,
+              1.33687822613865,
+              1.29416191671044
+            ],
+            "median": 1.29416191671044,
+            "q1": 1.2602010499685998,
+            "q3": 1.315520071424545
+          },
+          "fitting": {
+            "retained_seconds": [
+              1.21581272687763,
+              1.32628982607275,
+              1.2838522028178
+            ],
+            "median": 1.2838522028178,
+            "q1": 1.249832464847715,
+            "q3": 1.305071014445275
+          }
+        },
+        "prusie": {
+          "peak_rss_bytes": 138870784,
+          "process_calls": 4,
+          "niter": 15,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              0.023181964,
+              0.023064252,
+              0.023054644
+            ],
+            "median": 0.023064252,
+            "q1": 0.023059448,
+            "q3": 0.023123108
+          },
+          "fitting": {
+            "retained_seconds": [
+              0.020639084999999998,
+              0.020623829,
+              0.020582048000000002
+            ],
+            "median": 0.020623829,
+            "q1": 0.0206029385,
+            "q3": 0.020631457
+          }
+        }
+      },
+      "alpha_max_abs_error": 1.3095584781505631e-09,
+      "pip_max_abs_error": 1.0248972781568e-09,
+      "paired_complete_time_ratio": 56.11115923943425
+    },
+    {
+      "case_key": "window_2000",
+      "case_id": "T2D_chr10_61277948_71054950",
+      "p": 2000,
+      "host": "cpunode-029",
+      "job_id": "700793",
+      "original_result_sha256": "da00cebad4e930c845fa2da41b619afb97e661513491773a70c90627654af198",
+      "ld_sha256": "abf25ac0eba85b597981788d5a77d0aad42c7cdb7de08128422fc7b26bd50366",
+      "z_sha256": "2a371e671f1921d067a59ab27267df07340477ff91a2dd1064acd3770c3847c2",
+      "variant_ids_sha256": "d1298c4a5e79a6e7e68d646f3a0036eaafbcabb4296dae1840f8500885115345",
+      "parameters": {
+        "L": 10,
+        "check_input": false,
+        "check_null_threshold": 0.0,
+        "check_prior": true,
+        "coverage": 0.95,
+        "estimate_prior_method": "optim",
+        "estimate_prior_variance": true,
+        "estimate_residual_variance": false,
+        "max_iter": 100,
+        "min_abs_corr": 0.5,
+        "n": 486019,
+        "n_purity": 19221,
+        "null_weight": 0.0,
+        "prior_tol": 1e-09,
+        "r_tol": 1e-08,
+        "refine": false,
+        "residual_variance": 1.0,
+        "scaled_prior_variance": 0.2,
+        "standardize": true,
+        "tol": 0.001
+      },
+      "backends": {
+        "susieR": {
+          "peak_rss_bytes": 529461248,
+          "process_calls": 4,
+          "niter": 5,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              1.29865181259811,
+              1.2622486660257,
+              1.2588475998491
+            ],
+            "median": 1.2622486660257,
+            "q1": 1.2605481329374,
+            "q3": 1.280450239311905
+          },
+          "fitting": {
+            "retained_seconds": [
+              1.24544200953096,
+              1.21772249881178,
+              1.21241961140186
+            ],
+            "median": 1.21772249881178,
+            "q1": 1.21507105510682,
+            "q3": 1.2315822541713701
+          }
+        },
+        "prusie": {
+          "peak_rss_bytes": 154120192,
+          "process_calls": 4,
+          "niter": 5,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              0.04067383,
+              0.040282313,
+              0.040226047
+            ],
+            "median": 0.040282313,
+            "q1": 0.04025418,
+            "q3": 0.040478071500000004
+          },
+          "fitting": {
+            "retained_seconds": [
+              0.029827360999999997,
+              0.029638326,
+              0.030404787
+            ],
+            "median": 0.029827360999999997,
+            "q1": 0.029732843499999998,
+            "q3": 0.030116074
+          }
+        }
+      },
+      "alpha_max_abs_error": 1.52112211715405e-10,
+      "pip_max_abs_error": 1.521116566038927e-10,
+      "paired_complete_time_ratio": 31.335059285838426
+    },
+    {
+      "case_key": "window_4000",
+      "case_id": "T2D_chr10_61277948_71054950",
+      "p": 4000,
+      "host": "cpunode-015",
+      "job_id": "700679",
+      "original_result_sha256": "35c1e6e6aceef26bbce5c3a54164ae6e64955fca5b5eb3838676fbd0eff0395c",
+      "ld_sha256": "e4dccb6537e01b056cbab23ee1a51b49bbfda56a06f38c696e07eb0aa83b80df",
+      "z_sha256": "764e4c6d612e85be1a2133bb487014d8f733dff1ee59c2b659f2d6bb4875d4ef",
+      "variant_ids_sha256": "50a6f4c80d439a66e464df6ab9f87bf410be8fdb17440d2235d4c03a18c50441",
+      "parameters": {
+        "L": 10,
+        "check_input": false,
+        "check_null_threshold": 0.0,
+        "check_prior": true,
+        "coverage": 0.95,
+        "estimate_prior_method": "optim",
+        "estimate_prior_variance": true,
+        "estimate_residual_variance": false,
+        "max_iter": 100,
+        "min_abs_corr": 0.5,
+        "n": 486019,
+        "n_purity": 19221,
+        "null_weight": 0.0,
+        "prior_tol": 1e-09,
+        "r_tol": 1e-08,
+        "refine": false,
+        "residual_variance": 1.0,
+        "scaled_prior_variance": 0.2,
+        "standardize": true,
+        "tol": 0.001
+      },
+      "backends": {
+        "susieR": {
+          "peak_rss_bytes": 1390997504,
+          "process_calls": 4,
+          "niter": 11,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              10.066274494864,
+              10.3296284433454,
+              10.1753860963508
+            ],
+            "median": 10.1753860963508,
+            "q1": 10.120830295607401,
+            "q3": 10.2525072698481
+          },
+          "fitting": {
+            "retained_seconds": [
+              9.8591775726527,
+              10.0787954451516,
+              9.94191088154912
+            ],
+            "median": 9.94191088154912,
+            "q1": 9.900544227100909,
+            "q3": 10.01035316335036
+          }
+        },
+        "prusie": {
+          "peak_rss_bytes": 262725632,
+          "process_calls": 4,
+          "niter": 11,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              0.168552078,
+              0.167684795,
+              0.173309002
+            ],
+            "median": 0.168552078,
+            "q1": 0.1681184365,
+            "q3": 0.17093054
+          },
+          "fitting": {
+            "retained_seconds": [
+              0.126813755,
+              0.126056999,
+              0.130068409
+            ],
+            "median": 0.126813755,
+            "q1": 0.12643537700000002,
+            "q3": 0.12844108199999998
+          }
+        }
+      },
+      "alpha_max_abs_error": 8.985231690628037e-10,
+      "pip_max_abs_error": 5.369071853777996e-10,
+      "paired_complete_time_ratio": 60.3693897879491
+    },
+    {
+      "case_key": "window_10000",
+      "case_id": "T2D_chr10_61277948_71054950",
+      "p": 10000,
+      "host": "cpunode-029",
+      "job_id": "700793",
+      "original_result_sha256": "b5f4cce1370a0bdac25e8208beb83889c6f79a4bb78b72678446cd1b75dc9c53",
+      "ld_sha256": "89e9ec7ab490dff80227f87f48091ddf9bd442a4193da262700e8c6c605f127a",
+      "z_sha256": "bf5679001e372c67e67085e102bc7f2986a49aaafaa9ee91ba547ec8e9f04c98",
+      "variant_ids_sha256": "32d0f9a03a708d18645b87747bfddde7901b5a5585de322b72a730c855c2aad5",
+      "parameters": {
+        "L": 10,
+        "check_input": false,
+        "check_null_threshold": 0.0,
+        "check_prior": true,
+        "coverage": 0.95,
+        "estimate_prior_method": "optim",
+        "estimate_prior_variance": true,
+        "estimate_residual_variance": false,
+        "max_iter": 100,
+        "min_abs_corr": 0.5,
+        "n": 486019,
+        "n_purity": 19221,
+        "null_weight": 0.0,
+        "prior_tol": 1e-09,
+        "r_tol": 1e-08,
+        "refine": false,
+        "residual_variance": 1.0,
+        "scaled_prior_variance": 0.2,
+        "standardize": true,
+        "tol": 0.001
+      },
+      "backends": {
+        "susieR": {
+          "peak_rss_bytes": 4893044736,
+          "process_calls": 4,
+          "niter": 17,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              71.0679848343134,
+              70.6196428230032,
+              1576.38740886375
+            ],
+            "median": 71.0679848343134,
+            "q1": 70.84381382865831,
+            "q3": 823.7276968490316
+          },
+          "fitting": {
+            "retained_seconds": [
+              69.2873260956258,
+              68.3560305712745,
+              70.1202525179833
+            ],
+            "median": 69.2873260956258,
+            "q1": 68.82167833345015,
+            "q3": 69.70378930680455
+          }
+        },
+        "prusie": {
+          "peak_rss_bytes": 959135744,
+          "process_calls": 4,
+          "niter": 17,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              1.023615641,
+              1.022718571,
+              1.124672775
+            ],
+            "median": 1.023615641,
+            "q1": 1.0231671059999998,
+            "q3": 1.0741442079999999
+          },
+          "fitting": {
+            "retained_seconds": [
+              0.794901005,
+              0.779858276,
+              0.8902069859999999
+            ],
+            "median": 0.794901005,
+            "q1": 0.7873796405,
+            "q3": 0.8425539955
+          }
+        }
+      },
+      "alpha_max_abs_error": 7.149332931222219e-10,
+      "pip_max_abs_error": 7.149332237332828e-10,
+      "paired_complete_time_ratio": 69.42838892622335
+    },
+    {
+      "case_key": "window_19221",
+      "case_id": "T2D_chr10_61277948_71054950",
+      "p": 19221,
+      "host": "cpunode-015",
+      "job_id": "700679",
+      "original_result_sha256": "3fe17eaa31b3034fa0fe3caa2d7fa5c5edad7c41876656bc7d10d3cbb30d10af",
+      "ld_sha256": "1bf48d7d688798315dbd2c10e0ecaaa5a8a15b44b33c2c327672649e9c19abcb",
+      "z_sha256": "3a3474f9b8cb3be02ad76bbb6d731b4d0d0a02ffc57afbd2d478e79e8198b6f8",
+      "variant_ids_sha256": "6f52513421aff9e1a00a7c29816b8c435f12e4c02d47f821aec75bd3c02dbe8b",
+      "parameters": {
+        "L": 10,
+        "check_input": false,
+        "check_null_threshold": 0.0,
+        "check_prior": true,
+        "coverage": 0.95,
+        "estimate_prior_method": "optim",
+        "estimate_prior_variance": true,
+        "estimate_residual_variance": false,
+        "max_iter": 100,
+        "min_abs_corr": 0.5,
+        "n": 486019,
+        "n_purity": 19221,
+        "null_weight": 0.0,
+        "prior_tol": 1e-09,
+        "r_tol": 1e-08,
+        "refine": false,
+        "residual_variance": 1.0,
+        "scaled_prior_variance": 0.2,
+        "standardize": true,
+        "tol": 0.001
+      },
+      "backends": {
+        "susieR": {
+          "peak_rss_bytes": 20390068224,
+          "process_calls": 4,
+          "niter": 28,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              415.16984820459,
+              414.769441886805,
+              413.101290650666
+            ],
+            "median": 414.769441886805,
+            "q1": 413.9353662687355,
+            "q3": 414.96964504569746
+          },
+          "fitting": {
+            "retained_seconds": [
+              408.127895442769,
+              407.902469011955,
+              406.230841360986
+            ],
+            "median": 407.902469011955,
+            "q1": 407.0666551864705,
+            "q3": 408.015182227362
+          }
+        },
+        "prusie": {
+          "peak_rss_bytes": 3239870464,
+          "process_calls": 4,
+          "niter": 28,
+          "converged": true,
+          "complete": {
+            "retained_seconds": [
+              6.08526032,
+              5.534698746,
+              5.841450544
+            ],
+            "median": 5.841450544,
+            "q1": 5.688074645,
+            "q3": 5.963355432
+          },
+          "fitting": {
+            "retained_seconds": [
+              5.141180011,
+              4.626509781,
+              4.922938393
+            ],
+            "median": 4.922938393,
+            "q1": 4.774724087,
+            "q3": 5.032059202
+          }
+        }
+      },
+      "alpha_max_abs_error": 3.5513669782716306e-10,
+      "pip_max_abs_error": 3.5513669782716306e-10,
+      "paired_complete_time_ratio": 71.00452854348518
+    }
+  ]
+}

@@ -1,0 +1,538 @@
+{
+  "records_sha256": "ab6eb6e424c06b9ce734aadbf2e58176750a6bc4e0b7ffce171a2796f51f3f9c",
+  "protocol_export_sha256": "b9b5849202ad111a2da84e8e0ce57410e5b4f6f1f575c7f7eb09e134d5e8661a",
+  "timing_source_protocol_sha256": "3893ec7f92fc042f15eade88a4c27a452835bf3285dfda037d6133c55fc56825",
+  "retained_calls_per_backend": 3,
+  "paired_ratio": "Per case: median of three susieR calls / median of three prusie calls; panel summary: median of these ratios",
+  "total_software_seconds": "Sum of per-case median complete-call times, one representative analysis per case; not the sum of repeated calls or a measured parallel makespan",
+  "clock_boundary": "Already loaded arrays enter public susie_rss through returned result, including software validation and preparation; excludes disk reads, LD reconstruction, imports, explicit GC, comparisons and serialization",
+  "memory_source": "Backend timing-process high-water marks in benchmark_records.jsonl.gz: R.peak_rss_diagnostic_bytes and prusie.peak_rss_diagnostic_bytes",
+  "memory_boundary": "One fresh process per case/backend; includes interpreter, libraries, loaded inputs, warmup and retained calls; captured after the final call before numerical comparison or serialization; not an isolated fitting allocation or an independent single-call memory experiment",
+  "memory_process_calls": "Four calls for 14,339 cases; eight calls for 24 initial-schedule cases. Time summaries use three retained calls for every case, but process high-water marks cannot be truncated retrospectively.",
+  "panels": {
+    "GWAS": {
+      "cases": 200,
+      "metrics": {
+        "complete": {
+          "paired_ratio": {
+            "min": 21.865800264703555,
+            "q1": 37.964436806361945,
+            "median": 47.74248733107418,
+            "q3": 58.760493779723056,
+            "max": 96.8016029492759
+          },
+          "wins": 200,
+          "ties": 0,
+          "regressions": 0,
+          "backends": {
+            "susieR": {
+              "total_software_seconds": 6871.117647359148,
+              "case_median_seconds": {
+                "min": 1.70393394492567,
+                "q1": 12.1853218441829,
+                "median": 18.746890027076,
+                "q3": 37.30627419636583,
+                "max": 417.039866636507
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.00012719831756518001,
+                "q1": 0.0028575783402253734,
+                "median": 0.006676008691242737,
+                "q3": 0.014705379683569143,
+                "max": 4.094915685164214
+              },
+              "all_retained_seconds": 23610.002106528736
+            },
+            "prusie": {
+              "total_software_seconds": 160.303982897,
+              "case_median_seconds": {
+                "min": 0.033626953,
+                "q1": 0.22811299525,
+                "median": 0.392503205,
+                "q3": 0.9184191850000001,
+                "max": 6.614325625
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.0009149682180179473,
+                "q1": 0.006458042168955756,
+                "median": 0.012759077029967609,
+                "q3": 0.03007054414878156,
+                "max": 0.13787548247895082
+              },
+              "all_retained_seconds": 479.91746192
+            }
+          }
+        },
+        "fitting": {
+          "paired_ratio": {
+            "min": 22.618343023624288,
+            "q1": 42.436969417815334,
+            "median": 57.342514910510346,
+            "q3": 74.46361228786341,
+            "max": 151.4734993322072
+          },
+          "wins": 200,
+          "ties": 0,
+          "regressions": 0,
+          "backends": {
+            "susieR": {
+              "total_software_seconds": 6699.118961418048,
+              "case_median_seconds": {
+                "min": 1.65023742150515,
+                "q1": 11.689812754048075,
+                "median": 18.2162811062299,
+                "q3": 36.14014400518502,
+                "max": 409.919116511941
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.00024012368069140333,
+                "q1": 0.0024888484208010746,
+                "median": 0.006722099706136528,
+                "q3": 0.015163389232336184,
+                "max": 4.200104147581557
+              },
+              "all_retained_seconds": 23093.3572269138
+            },
+            "prusie": {
+              "total_software_seconds": 139.404163682,
+              "case_median_seconds": {
+                "min": 0.026298507,
+                "q1": 0.1719626655,
+                "median": 0.316915987,
+                "q3": 0.8230450675000001,
+                "max": 5.894423703
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.002001967164179728,
+                "q1": 0.0076787837496935666,
+                "median": 0.01313629375145489,
+                "q3": 0.03057356910592767,
+                "max": 0.1481847797528008
+              },
+              "all_retained_seconds": 417.213725959
+            }
+          }
+        }
+      },
+      "process_peak_rss_bytes": {
+        "prusie": {
+          "min": 152985600.0,
+          "q1": 290242560.0,
+          "median": 351358976.0,
+          "q3": 498385920.0,
+          "max": 3239866368.0
+        },
+        "susieR": {
+          "min": 528883712.0,
+          "q1": 1395153920.0,
+          "median": 1876375552.0,
+          "q3": 2748889088.0,
+          "max": 20393480192.0
+        }
+      },
+      "alpha_passes": 200,
+      "alpha_failures": 0,
+      "pip_exceedances": 0,
+      "max_abs_alpha_error": 4.054661872920917e-08,
+      "max_abs_pip_error": 4.054661828511996e-08,
+      "nonconverged": {
+        "susieR": 0,
+        "prusie": 0
+      },
+      "at_iteration_limit": {
+        "susieR": 0,
+        "prusie": 0
+      },
+      "iteration_or_convergence_mismatches": [],
+      "exceedances": [],
+      "paired_peak_rss_ratio": {
+        "min": 3.0146291820379085,
+        "q1": 4.269859766811446,
+        "median": 5.105317504209901,
+        "q3": 5.9437444909218,
+        "max": 7.580905408382908
+      }
+    },
+    "eQTL": {
+      "cases": 14157,
+      "metrics": {
+        "complete": {
+          "paired_ratio": {
+            "min": 9.376467468165162,
+            "q1": 23.256428434555318,
+            "median": 27.534405188383126,
+            "q3": 32.598495734869296,
+            "max": 99.69230545839604
+          },
+          "wins": 14157,
+          "ties": 0,
+          "regressions": 0,
+          "backends": {
+            "susieR": {
+              "total_software_seconds": 76622.12021820154,
+              "case_median_seconds": {
+                "min": 0.0280136801302433,
+                "q1": 1.90423748083413,
+                "median": 3.82222893368453,
+                "q3": 6.29853867925704,
+                "max": 185.680223996751
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.00013596472009522282,
+                "q1": 0.012100855784101349,
+                "median": 0.02098049594113209,
+                "q3": 0.03386265566825996,
+                "max": 0.4970205241457509
+              },
+              "all_retained_seconds": 229780.66780680604
+            },
+            "prusie": {
+              "total_software_seconds": 2880.763677263,
+              "case_median_seconds": {
+                "min": 0.000886418,
+                "q1": 0.060274944,
+                "median": 0.130487044,
+                "q3": 0.245887396,
+                "max": 7.002278449
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.0002228324023949299,
+                "q1": 0.013024002976386251,
+                "median": 0.02312351169689493,
+                "q3": 0.03769913516394328,
+                "max": 0.3332649375825516
+              },
+              "all_retained_seconds": 8644.554523744
+            }
+          }
+        },
+        "fitting": {
+          "paired_ratio": {
+            "min": 9.775873254351824,
+            "q1": 26.870880789512963,
+            "median": 35.2130838269141,
+            "q3": 46.99176178133922,
+            "max": 116.34098642241662
+          },
+          "wins": 14157,
+          "ties": 0,
+          "regressions": 0,
+          "backends": {
+            "susieR": {
+              "total_software_seconds": 73416.59241713118,
+              "case_median_seconds": {
+                "min": 0.0272679785266519,
+                "q1": 1.63284664228559,
+                "median": 3.62181485071778,
+                "q3": 6.06947131920606,
+                "max": 184.822397166863
+              },
+              "repeat_iqr_over_median": {
+                "min": 9.211510098421056e-05,
+                "q1": 0.012080270323650381,
+                "median": 0.02095232404064721,
+                "q3": 0.03368169762986188,
+                "max": 0.5046781418900751
+              },
+              "all_retained_seconds": 220147.53747658897
+            },
+            "prusie": {
+              "total_software_seconds": 2464.986510466,
+              "case_median_seconds": {
+                "min": 0.000516181,
+                "q1": 0.03401371,
+                "median": 0.10416687,
+                "q3": 0.209928536,
+                "max": 6.9005696709999995
+              },
+              "repeat_iqr_over_median": {
+                "min": 7.950377934492563e-05,
+                "q1": 0.011957923838254723,
+                "median": 0.022650167937073497,
+                "q3": 0.03864391840234189,
+                "max": 0.4597713584473044
+              },
+              "all_retained_seconds": 7397.456140449
+            }
+          }
+        }
+      },
+      "process_peak_rss_bytes": {
+        "prusie": {
+          "min": 73777152.0,
+          "q1": 171585536.0,
+          "median": 207708160.0,
+          "q3": 246005760.0,
+          "max": 639774720.0
+        },
+        "susieR": {
+          "min": 239747072.0,
+          "q1": 675127296.0,
+          "median": 922906624.0,
+          "q3": 1233969152.0,
+          "max": 3628601344.0
+        }
+      },
+      "alpha_passes": 14155,
+      "alpha_failures": 2,
+      "pip_exceedances": 3,
+      "max_abs_alpha_error": 4.349480266624406e-05,
+      "max_abs_pip_error": 0.00024323098958911604,
+      "nonconverged": {
+        "susieR": 224,
+        "prusie": 224
+      },
+      "at_iteration_limit": {
+        "susieR": 225,
+        "prusie": 225
+      },
+      "iteration_or_convergence_mismatches": [],
+      "exceedances": [
+        {
+          "case_key": "eQTL_05761",
+          "case_id": "ENSG00000164741.15",
+          "panel": "eQTL",
+          "kind": "primary",
+          "p": 6644,
+          "alpha_pass": false,
+          "max_abs_alpha_error": 1.5907201887710443e-05,
+          "max_abs_pip_error": 1.5907201887710443e-05,
+          "protocol_version": 2,
+          "host": "cpunode-029",
+          "job_id": "700793",
+          "ld_sha256": "8545c847abec1366a9f3143c63efda609d6d91f50b0575683f25aad6ed071881",
+          "memory_process_calls": 4,
+          "susieR_seconds": 185.680223996751,
+          "susieR_minimum": 185.291705561802,
+          "susieR_maximum": 186.00129168015,
+          "susieR_q1": 185.48596477927651,
+          "susieR_q3": 185.8407578384505,
+          "susieR_repeat_iqr_over_median": 0.0019107746185193072,
+          "susieR_fitting_seconds": 184.822397166863,
+          "susieR_fitting_minimum": 184.430786701851,
+          "susieR_fitting_maximum": 185.156441652216,
+          "susieR_fitting_q1": 184.626591934357,
+          "susieR_fitting_q3": 184.9894194095395,
+          "susieR_fitting_repeat_iqr_over_median": 0.001963114215291308,
+          "susieR_niter": 100,
+          "susieR_converged": false,
+          "susieR_peak_rss_bytes": 2638843904,
+          "prusie_seconds": 6.077831898,
+          "prusie_minimum": 5.407716657,
+          "prusie_maximum": 7.304880112,
+          "prusie_q1": 5.742774277500001,
+          "prusie_q3": 6.691356005,
+          "prusie_repeat_iqr_over_median": 0.15607238624222963,
+          "prusie_fitting_seconds": 5.935052271,
+          "prusie_fitting_minimum": 5.278744076,
+          "prusie_fitting_maximum": 7.185452209,
+          "prusie_fitting_q1": 5.606898173499999,
+          "prusie_fitting_q3": 6.5602522400000005,
+          "prusie_fitting_repeat_iqr_over_median": 0.16063111544245423,
+          "prusie_niter": 100,
+          "prusie_converged": false,
+          "prusie_peak_rss_bytes": 562712576,
+          "speedup": 30.55040466944336,
+          "fitting_speedup": 31.140820455777078
+        },
+        {
+          "case_key": "eQTL_07860",
+          "case_id": "ENSG00000110203.10",
+          "panel": "eQTL",
+          "kind": "primary",
+          "p": 3042,
+          "alpha_pass": false,
+          "max_abs_alpha_error": 4.349480266624406e-05,
+          "max_abs_pip_error": 4.3480432290188276e-05,
+          "protocol_version": 2,
+          "host": "cpunode-029",
+          "job_id": "700793",
+          "ld_sha256": "ae76f002716b58170c48b1a967513934fbf5c4d96d2332d97f1e8e90ace18010",
+          "memory_process_calls": 4,
+          "susieR_seconds": 44.0899012843147,
+          "susieR_minimum": 43.8711983067915,
+          "susieR_maximum": 44.6075561996549,
+          "susieR_q1": 43.9805497955531,
+          "susieR_q3": 44.3487287419848,
+          "susieR_repeat_iqr_over_median": 0.008350641205964326,
+          "susieR_fitting_seconds": 43.9174717534333,
+          "susieR_fitting_minimum": 43.5030968235806,
+          "susieR_fitting_maximum": 44.4352721348405,
+          "susieR_fitting_q1": 43.71028428850695,
+          "susieR_fitting_q3": 44.1763719441369,
+          "susieR_fitting_repeat_iqr_over_median": 0.010612807090688655,
+          "susieR_niter": 100,
+          "susieR_converged": false,
+          "susieR_peak_rss_bytes": 665362432,
+          "prusie_seconds": 1.025457365,
+          "prusie_minimum": 1.024907821,
+          "prusie_maximum": 1.026816203,
+          "prusie_q1": 1.025182593,
+          "prusie_q3": 1.0261367840000002,
+          "prusie_repeat_iqr_over_median": 0.0009305028493311954,
+          "prusie_fitting_seconds": 1.002710978,
+          "prusie_fitting_minimum": 1.000134252,
+          "prusie_fitting_maximum": 1.0029026109999999,
+          "prusie_fitting_q1": 1.001422615,
+          "prusie_fitting_q3": 1.0028067945,
+          "prusie_fitting_repeat_iqr_over_median": 0.001380437165214747,
+          "prusie_niter": 100,
+          "prusie_converged": false,
+          "prusie_peak_rss_bytes": 194232320,
+          "speedup": 42.99535289242834,
+          "fitting_speedup": 43.798734348187516
+        }
+      ],
+      "paired_peak_rss_ratio": {
+        "min": 1.763129935391242,
+        "q1": 3.6599019034333797,
+        "median": 4.598428608567549,
+        "q3": 5.494062007356805,
+        "max": 7.886050968492619
+      }
+    },
+    "windows": {
+      "cases": 6,
+      "metrics": {
+        "complete": {
+          "paired_ratio": {
+            "min": 31.335059285838426,
+            "q1": 46.92514505560529,
+            "median": 58.24027451369167,
+            "q3": 67.16363914165478,
+            "max": 71.00452854348518
+          },
+          "wins": 6,
+          "ties": 0,
+          "regressions": 0,
+          "backends": {
+            "susieR": {
+              "total_software_seconds": 499.0319128148257,
+              "case_median_seconds": {
+                "min": 0.462689414620399,
+                "q1": 1.270226978696885,
+                "median": 5.73477400653062,
+                "q3": 55.84483514982276,
+                "max": 414.769441886805
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.002493623378465366,
+                "q1": 0.006430825722028152,
+                "median": 0.01435395922663208,
+                "q3": 0.03600058663767294,
+                "max": 10.59385438852154
+              },
+              "all_retained_seconds": 3000.753453979265
+            },
+            "prusie": {
+              "total_software_seconds": 7.107513307,
+              "case_median_seconds": {
+                "min": 0.010548479,
+                "q1": 0.027368767250000002,
+                "median": 0.1044171955,
+                "q3": 0.80984975025,
+                "max": 5.841450544
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.0027601155242320497,
+                "q1": 0.006213341934876164,
+                "median": 0.012431536880608385,
+                "q3": 0.03951503328002938,
+                "max": 0.04980101901354207
+              },
+              "all_retained_seconds": 21.364164529
+            }
+          }
+        },
+        "fitting": {
+          "paired_ratio": {
+            "min": 40.8256868186153,
+            "q1": 51.27989065012041,
+            "median": 70.32432334335836,
+            "q3": 81.74257360785337,
+            "max": 87.16472322943635
+          },
+          "wins": 6,
+          "ties": 0,
+          "regressions": 0,
+          "backends": {
+            "susieR": {
+              "total_software_seconds": 490.0930847208948,
+              "case_median_seconds": {
+                "min": 0.459804030135274,
+                "q1": 1.234254924813285,
+                "median": 5.61288154218346,
+                "q3": 54.45097229210663,
+                "max": 407.902469011955
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.0023253770519925925,
+                "q1": 0.006042329030106854,
+                "median": 0.01188812789090313,
+                "q3": 0.01335211201144592,
+                "max": 0.04302562980094002
+              },
+              "all_retained_seconds": 1468.7867477135733
+            },
+            "prusie": {
+              "total_software_seconds": 5.90475945,
+              "case_median_seconds": {
+                "min": 0.009655107,
+                "q1": 0.022924712,
+                "median": 0.078320558,
+                "q3": 0.6278791925,
+                "max": 4.922938393
+              },
+              "repeat_iqr_over_median": {
+                "min": 0.0013827936606727077,
+                "q1": 0.008154326707771607,
+                "median": 0.014332217127506024,
+                "q3": 0.043158536366462594,
+                "max": 0.06941034751868254
+              },
+              "all_retained_seconds": 17.719237848
+            }
+          }
+        }
+      },
+      "process_peak_rss_bytes": {
+        "prusie": {
+          "min": 138108928.0,
+          "q1": 142683136.0,
+          "median": 208422912.0,
+          "q3": 785033216.0,
+          "max": 3239870464.0
+        },
+        "susieR": {
+          "min": 298463232.0,
+          "q1": 410829824.0,
+          "median": 960229376.0,
+          "q3": 4017532928.0,
+          "max": 20390068224.0
+        }
+      },
+      "alpha_passes": 6,
+      "alpha_failures": 0,
+      "pip_exceedances": 0,
+      "max_abs_alpha_error": 1.3095584781505631e-09,
+      "max_abs_pip_error": 1.0248972781568e-09,
+      "nonconverged": {
+        "susieR": 0,
+        "prusie": 0
+      },
+      "at_iteration_limit": {
+        "susieR": 0,
+        "prusie": 0
+      },
+      "iteration_or_convergence_mismatches": [],
+      "exceedances": [],
+      "paired_peak_rss_ratio": {
+        "min": 2.161071237914467,
+        "q1": 2.8640505879863483,
+        "median": 4.268446586794228,
+        "q3": 5.246244004415103,
+        "max": 6.293482548319561
+      }
+    }
+  }
+}

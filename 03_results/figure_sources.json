@@ -1,0 +1,29 @@
+{
+  "figure1.pdf": {
+    "sha256": "1c9405ba8fe8cd58d25bea4460943dbb7b53795c1b1aec9b5c2488af52e551d0",
+    "source": "benchmark_records.jsonl.gz and figure1_traceability.json",
+    "generator": "scripts/make_figure1.py",
+    "hardware": "exclusive AMD EPYC 7742 compute nodes"
+  },
+  "supp_agreement.pdf": {
+    "sha256": "269e65d24b44c69726a229cc8718c8850e047ad3c67b5cf27654b7d9163c8735",
+    "source": "benchmark_records.jsonl.gz",
+    "source_sha256": "ab6eb6e424c06b9ce734aadbf2e58176750a6bc4e0b7ffce171a2796f51f3f9c",
+    "generator": "scripts/make_agreement_fitting_figures.py",
+    "hardware": "exclusive AMD EPYC 7742 compute nodes"
+  },
+  "supp_fitting.pdf": {
+    "sha256": "be728ce775979e816f8798f17e6236da9fa627fc2deb16e2af5bc1fa71bbefca",
+    "source": "benchmark_records.jsonl.gz",
+    "source_sha256": "ab6eb6e424c06b9ce734aadbf2e58176750a6bc4e0b7ffce171a2796f51f3f9c",
+    "generator": "scripts/make_agreement_fitting_figures.py",
+    "hardware": "exclusive AMD EPYC 7742 compute nodes"
+  },
+  "supp_scaling.pdf": {
+    "sha256": "b488951847d658cbe82909ce913d70c5537abd8d4c1d2d26625019bfae594922",
+    "source": "benchmark_windows.tsv",
+    "source_sha256": "257e4fbd266372ea6ed2f3b4798d9a566e1f9d0ff9f5ea75c5c779c19e99e9b1",
+    "generator": "scripts/make_supplement_figures.py",
+    "hardware": "exclusive AMD EPYC 7742 compute nodes"
+  }
+}

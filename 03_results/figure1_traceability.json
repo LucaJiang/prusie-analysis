@@ -1,0 +1,42 @@
+{
+  "source": "benchmark_records.jsonl.gz",
+  "source_sha256": "ab6eb6e424c06b9ce734aadbf2e58176750a6bc4e0b7ffce171a2796f51f3f9c",
+  "points": "One per primary case: median of three retained complete calls; backend-process peak RSS",
+  "lines": "Median within log-spaced p bins with at least the stated case count",
+  "runtime_annotation": "Sum of all retained susieR complete-call times / sum of all retained prusie times",
+  "memory_annotation": "Median over cases with p >= large_p of backend-process peak RSS / 8p^2 bytes",
+  "bins": {
+    "GWAS": {
+      "bins": 7,
+      "min_count": 5
+    },
+    "eQTL": {
+      "bins": 14,
+      "min_count": 20
+    }
+  },
+  "summary": {
+    "GWAS": {
+      "cases": 200,
+      "cumulative_time_ratio": 49.19596384776767,
+      "median_paired_memory_ratio": 5.105317504209901,
+      "large_p": 10000,
+      "large_p_cases": 14,
+      "large_p_median_peak_over_ld": {
+        "prusie": 1.1842043018678052,
+        "susieR": 6.756707905029472
+      }
+    },
+    "eQTL": {
+      "cases": 14157,
+      "cumulative_time_ratio": 26.58097270086821,
+      "median_paired_memory_ratio": 4.598428608567549,
+      "large_p": 5000,
+      "large_p_cases": 531,
+      "large_p_median_peak_over_ld": {
+        "prusie": 1.6428319266196478,
+        "susieR": 9.375643964226441
+      }
+    }
+  }
+}
