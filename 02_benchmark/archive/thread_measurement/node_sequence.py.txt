@@ -1,0 +1,52 @@
+"""Prepare one allocated node, or execute its preassigned complete-case shards."""
+from common import *
+import argparse
+import socket
+import subprocess
+import sys
+import time
+
+p = argparse.ArgumentParser()
+p.add_argument('phase', choices=['prepare', 'run'])
+p.add_argument('--window', required=True)
+p.add_argument('--output', required=True)
+p.add_argument('--input-root', required=True)
+a = p.parse_args()
+plan = read(BUNDLE / 'plan.json')
+nodes = plan['nodes']
+host = socket.gethostname()
+assert plan['node_limit'] == len(nodes) == 2 and len(set(nodes)) == 2
+assert host in nodes and os.environ.get('SLURM_JOB_ID')
+assert int(os.environ['SLURM_JOB_NUM_NODES']) == len(nodes)
+assert os.environ['SLURM_JOB_PARTITION'] == plan['partition']
+root = Path(a.output) / a.window
+folder = root / 'preflight' / host
+
+def execute(script, *arguments):
+    subprocess.run([sys.executable, '-B', str(BUNDLE / 'scripts' / script),
+                    *map(str, arguments)], check=True)
+
+if a.phase == 'prepare':
+    folder.mkdir(parents=True, exist_ok=False)
+    execute('verify_bundle.py', '--output', folder / 'bundle_verification.json')
+    execute('verify_inputs.py', a.input_root, '--output', folder / 'input_verification.json')
+    if plan.get('thread_lane_domain') == 'numa':
+        execute('thread_audit.py', '--output', folder / 'thread_audit',
+                '--input-root', a.input_root)
+    write(folder / 'complete.json', dict(passed=True, hostname=host,
+          slurm_job_id=os.environ['SLURM_JOB_ID'], finished_epoch=time.time(),
+          plan_sha256=sha(BUNDLE / 'plan.json'), formal_calls=0))
+else:
+    # The enclosing srun prepare step has returned before the run step starts.
+    # Require every node's preflight, so no hashing/audit can overlap a fit.
+    for node in nodes:
+        receipt = read(root / 'preflight' / node / 'complete.json')
+        assert receipt['passed'] and receipt['hostname'] == node
+        assert receipt['slurm_job_id'] == os.environ['SLURM_JOB_ID']
+        assert receipt['plan_sha256'] == sha(BUNDLE / 'plan.json')
+    cases = read(BUNDLE / 'case_manifest.json')['cases']
+    count = (len(cases) + plan['lanes'] - 1) // plan['lanes']
+    index = nodes.index(host)
+    for shard in range(index, count, len(nodes)):
+        execute('node_controller.py', '--shard', shard, '--window', a.window,
+                '--output', a.output, '--input-root', a.input_root)

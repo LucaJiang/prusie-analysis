@@ -1,0 +1,24 @@
+"""Portable Slurm v9 utilities. No project-local imports or implicit paths."""
+from pathlib import Path
+import json, hashlib, os
+_window=os.environ.get('V030_M1_BUNDLE')
+assert _window, 'An explicit frozen M1 window is required'
+BUNDLE=Path(_window).resolve()
+assert BUNDLE.name=='bundle' and BUNDLE.parent.name in ('cumulative','scaling','overwrite')
+assert BUNDLE.is_relative_to(Path('/home/wjiang49/prusie_project/v030_20261026').resolve()) or BUNDLE.is_relative_to(Path('/home/wjiang49/coloc_r2py/runs/20261026_prusie_v030/m1').resolve())
+assert json.loads((BUNDLE/'plan.json').read_text())['id']==BUNDLE.parent.name
+def read(p):return json.loads(Path(p).read_text())
+def write(p,v):
+ p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);t=p.with_suffix(p.suffix+f'.{os.getpid()}.tmp');t.write_text(json.dumps(v,indent=2,ensure_ascii=False,allow_nan=False)+'\n');t.replace(p)
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def expand(s):
+ return {i for part in s.strip().split(',') if part for i in (range(int(part.split('-')[0]),int(part.split('-')[1])+1) if '-' in part else [int(part)])}
+def environment():
+ e=dict(os.environ)
+ e.pop('PYTHONWARNINGS',None)
+ for k in list(e):
+  if k.startswith('PRUSIE_'):e.pop(k)
+ for k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','BLIS_NUM_THREADS','NUMEXPR_NUM_THREADS','VECLIB_MAXIMUM_THREADS','PRUSIE_NUM_THREADS','RAYON_NUM_THREADS','NUMBA_NUM_THREADS'):e[k]='1'
+ e.update(PYTHONDONTWRITEBYTECODE='1',PYTHONNOUSERSITE='1',PYTHONPATH='')
+ return e

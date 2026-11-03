@@ -1,0 +1,99 @@
+{
+  "backends": {
+    "V030_t1": {
+      "python": "envs/V030_t1/bin/python",
+      "wheel": "wheels/V030/prusie-0.3.0-cp312-cp312-manylinux_2_34_x86_64.whl",
+      "wheel_sha256": "c0fd82cb617e3ff9d9ac290f2816602c5bdb87bbf57ece5093f7ca303e3a30dd",
+      "native_sha256": "a9d377e45583b654ddfbe8323a783e32a61bf042c755cb26c3873f2065ed0b3e",
+      "commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_identity": "frozen-code:909749f812c9bc3aa27f764d1543ef022816edf0",
+      "call_options": {
+        "n_threads": 1,
+        "overwrite_ld": false
+      },
+      "numpy_identity": {
+        "version": "1.26.4",
+        "files": {
+          "numpy/__init__.py": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+          "numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb"
+        }
+      },
+      "public_thread_api": true,
+      "public_overwrite_api": true,
+      "overwrite_binding_sha256": "feb5aa0bf645062ddebd9ed559c16dc81ca84204a43cd90b6123cc4ceaf5ecb4"
+    },
+    "V030_t2": {
+      "python": "envs/V030_t1/bin/python",
+      "wheel": "wheels/V030/prusie-0.3.0-cp312-cp312-manylinux_2_34_x86_64.whl",
+      "wheel_sha256": "c0fd82cb617e3ff9d9ac290f2816602c5bdb87bbf57ece5093f7ca303e3a30dd",
+      "native_sha256": "a9d377e45583b654ddfbe8323a783e32a61bf042c755cb26c3873f2065ed0b3e",
+      "commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_identity": "frozen-code:909749f812c9bc3aa27f764d1543ef022816edf0",
+      "call_options": {
+        "n_threads": 2,
+        "overwrite_ld": false
+      },
+      "numpy_identity": {
+        "version": "1.26.4",
+        "files": {
+          "numpy/__init__.py": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+          "numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb"
+        }
+      },
+      "public_thread_api": true,
+      "public_overwrite_api": true,
+      "overwrite_binding_sha256": "feb5aa0bf645062ddebd9ed559c16dc81ca84204a43cd90b6123cc4ceaf5ecb4",
+      "installation_of": "V030_t1"
+    },
+    "V030_t4": {
+      "python": "envs/V030_t1/bin/python",
+      "wheel": "wheels/V030/prusie-0.3.0-cp312-cp312-manylinux_2_34_x86_64.whl",
+      "wheel_sha256": "c0fd82cb617e3ff9d9ac290f2816602c5bdb87bbf57ece5093f7ca303e3a30dd",
+      "native_sha256": "a9d377e45583b654ddfbe8323a783e32a61bf042c755cb26c3873f2065ed0b3e",
+      "commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_identity": "frozen-code:909749f812c9bc3aa27f764d1543ef022816edf0",
+      "call_options": {
+        "n_threads": 4,
+        "overwrite_ld": false
+      },
+      "numpy_identity": {
+        "version": "1.26.4",
+        "files": {
+          "numpy/__init__.py": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+          "numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb"
+        }
+      },
+      "public_thread_api": true,
+      "public_overwrite_api": true,
+      "overwrite_binding_sha256": "feb5aa0bf645062ddebd9ed559c16dc81ca84204a43cd90b6123cc4ceaf5ecb4",
+      "installation_of": "V030_t1"
+    },
+    "V030_t8": {
+      "python": "envs/V030_t1/bin/python",
+      "wheel": "wheels/V030/prusie-0.3.0-cp312-cp312-manylinux_2_34_x86_64.whl",
+      "wheel_sha256": "c0fd82cb617e3ff9d9ac290f2816602c5bdb87bbf57ece5093f7ca303e3a30dd",
+      "native_sha256": "a9d377e45583b654ddfbe8323a783e32a61bf042c755cb26c3873f2065ed0b3e",
+      "commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_commit": "909749f812c9bc3aa27f764d1543ef022816edf0",
+      "build_identity": "frozen-code:909749f812c9bc3aa27f764d1543ef022816edf0",
+      "call_options": {
+        "n_threads": 8,
+        "overwrite_ld": false
+      },
+      "numpy_identity": {
+        "version": "1.26.4",
+        "files": {
+          "numpy/__init__.py": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+          "numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb"
+        }
+      },
+      "public_thread_api": true,
+      "public_overwrite_api": true,
+      "overwrite_binding_sha256": "feb5aa0bf645062ddebd9ed559c16dc81ca84204a43cd90b6123cc4ceaf5ecb4",
+      "installation_of": "V030_t1"
+    }
+  }
+}

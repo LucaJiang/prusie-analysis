@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "prusie_version": "0.3.0",
+  "prusie_wheel_sha256": "85285c26c1f6ae3caaed99c4d7766ede7f0083ea98eb2d26b7763d8654840b59",
+  "susieR_version": "0.16.6",
+  "susieR_commit": "8e56a8e038e989856d106d9ca5175cc664fea9d2",
+  "timing": {
+    "warmup_calls": 1,
+    "retained_calls": 3,
+    "seed": 20261028,
+    "backend_order": "Shuffle case keys separately within each panel with random.Random(20261028); alternate R-first and prusie-first after shuffling.",
+    "fresh_process": "One process per case/backend; backends run sequentially within each case.",
+    "complete_call": "Complete public susie_rss call; input reads, gc and export are outside the clock.",
+    "fitting": "Optional directly timed same-call spans using the archived native patch and R helper; no subtraction of separately measured costs.",
+    "headline": "Sum of all retained R times divided by the corresponding prusie total for the evaluated cases."
+  },
+  "panel": {
+    "GWAS": 200,
+    "eQTL": 14157,
+    "nested_windows": [
+      500,
+      1000,
+      2000,
+      4000,
+      10000,
+      19221
+    ]
+  },
+  "fit": {
+    "max_iter": 100,
+    "numerical_threads": 1,
+    "overwrite_ld": false,
+    "parameters": "Read exactly from each frozen case JSON; no filtering or parameter changes."
+  },
+  "historical_repeat_policy": "24 completed cases retained warmup and first three times from an earlier seven-retained-call protocol; saved alpha arrays are from repeat seven. All other complete cases use one warmup plus three retained calls.",
+  "alpha_comparison": {
+    "component_order": "Original rows; no permutation or filtering",
+    "reported_metric": "Maximum absolute difference over the complete final alpha matrix."
+  },
+  "timing_instrumentation": "The manuscript measured an instrumented derivative of the frozen wheel. The default portable mode uses the original wheel and records complete-call time only; instrumented mode requires rebuilding from the exact archived patch."
+}

@@ -1,0 +1,164 @@
+"""Frozen LD postcondition checks without an expected LD matrix.
+
+The oracle was frozen independently before candidate panel qualification. This module
+never constructs an expected LD matrix. Default calls retain full input
+invariance; only an explicit supported overwrite call consumes its LD array.
+"""
+from pathlib import Path
+import hashlib
+import json
+import math
+import numpy as np
+
+
+def file_sha(path):
+    with Path(path).open('rb') as handle:
+        return hashlib.file_digest(handle, 'sha256').hexdigest()
+
+
+def canonical_sha(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True,
+        separators=(',', ':'), allow_nan=False).encode()).hexdigest()
+
+
+def non_ld_input_sha(inputs):
+    """Hash every actual public argument except R, without copying R."""
+    digest = hashlib.sha256()
+
+    def visit(value):
+        if isinstance(value, np.ndarray):
+            assert value.dtype.hasobject is False
+            digest.update(b'array:')
+            visit(value.dtype.str)
+            visit(list(value.shape))
+            visit(list(value.strides))
+            visit(bool(value.flags.writeable))
+            # Frozen non-LD numerical inputs are C-contiguous vectors. Refuse
+            # an unexpected route rather than introducing a hidden conversion.
+            assert value.flags.c_contiguous
+            digest.update(memoryview(value).cast('B'))
+        elif isinstance(value, dict):
+            assert all(type(key) is str for key in value)
+            digest.update(b'dict:')
+            for key in sorted(value):
+                visit(key)
+                visit(value[key])
+        elif isinstance(value, (list, tuple)):
+            digest.update(b'list:' if type(value) is list else b'tuple:')
+            visit(len(value))
+            for item in value:
+                visit(item)
+        elif value is None or type(value) in (str, bool, int, float):
+            digest.update(type(value).__name__.encode() + b':')
+            digest.update(json.dumps(value, allow_nan=False).encode() + b'\0')
+        else:
+            raise AssertionError('Unsupported frozen non-LD input type')
+
+    visit({key: value for key, value in inputs.items() if key != 'R'})
+    return digest.hexdigest()
+
+
+def ld_geometry(value):
+    """Small metadata only; explicit consumption permits values to change."""
+    assert type(value) is np.ndarray
+    return dict(dtype=value.dtype.str,shape=list(value.shape),strides=list(value.strides),
+        writeable=bool(value.flags.writeable),c_contiguous=bool(value.flags.c_contiguous),
+        data_pointer=int(value.__array_interface__['data'][0]))
+
+
+class OverwriteOracle:
+    """Authenticate the complete panel and audit a saved per-call observation."""
+
+    def __init__(self, bundle, cases):
+        bundle = Path(bundle)
+        binding_path = bundle / 'overwrite_binding.json'
+        self.binding_sha256 = file_sha(binding_path)
+        binding = json.loads(binding_path.read_text())
+        assert binding['schema'] == 'OWR01_POSTCONDITION_V1'
+        assert binding['case_manifest_sha256'] == file_sha(bundle / 'case_manifest.json')
+        for filename in ('overwrite_postconditions.json', 'overwrite_contract.json',
+                         'overwrite_authorization.json'):
+            assert file_sha(bundle / filename) == binding['files'][filename]
+        oracle = json.loads((bundle / 'overwrite_postconditions.json').read_text())
+        contract = json.loads((bundle / 'overwrite_contract.json').read_text())
+        authorization = json.loads((bundle / 'overwrite_authorization.json').read_text())
+        self.oracle_sha256 = binding['files']['overwrite_postconditions.json']
+        self.contract_sha256 = binding['files']['overwrite_contract.json']
+        assert oracle['passed'] and oracle['fits'] == 0 and not oracle['formal_timing']
+        assert oracle['caller_inputs_read_only']
+        assert oracle['case_manifest_sha256'] == binding['oracle_case_manifest_sha256']
+        assert oracle['contract_sha256'] == self.contract_sha256
+        assert contract['id'] == 'OWR01' and contract['implementation_authorized'] is False
+        assert authorization['implementation_authorized'] is True
+        assert authorization['contract_sha256'] == self.contract_sha256
+        assert authorization['parent'] == binding['candidate_parent']
+        assert {key: oracle[key] for key in binding['oracle_provenance']} == binding['oracle_provenance']
+        rows = oracle['cases']
+        self.rows = {row['case_id']: row for row in rows}
+        case_by_id = {case['case_id']: case for case in cases}
+        assert len(rows) == len(self.rows) == len(case_by_id) == binding['case_count']
+        assert set(self.rows) == set(case_by_id) == set(binding['case_rows_sha256'])
+        assert set(self.rows) == set(binding['source_case_files_sha256'])
+        for cid, row in self.rows.items():
+            assert canonical_sha(row) == binding['case_rows_sha256'][cid]
+            case = case_by_id[cid]
+            assert row['panel_name'] == case['panel_name'] and row['p'] == case['p']
+            assert row['original_R_sha256'] == case['input_sha256']['R.bin']
+            assert row['settings_sha256'] == canonical_sha(case['settings'])
+            assert row['original_n'] == case['settings']['n']
+            scale = float(row['original_n']) - 1.0
+            assert math.isfinite(scale) and scale > 0 and row['rss_original_scale'] == scale
+            assert row['compiled_BASE_repair_bits_equal'] is True
+            action = row['expected_action']
+            assert action in ('ordered_scaled_xtx', 'symmetric_no_write',
+                              'no_witness_eager_no_write')
+            assert row['expected_working_scale'] == (1.0 if action == 'ordered_scaled_xtx' else scale)
+            assert isinstance(row['expected_R_sha256'], str) and len(row['expected_R_sha256']) == 64
+            if action != 'ordered_scaled_xtx':
+                assert row['expected_R_sha256'] == row['original_R_sha256']
+        for action, count in oracle['actions'].items():
+            assert count == sum(row['expected_action'] == action for row in rows)
+
+    def audit(self, case, backend, observation):
+        """Fail closed on identities, consumed bytes, QC and other arguments."""
+        options = backend.get('call_options', {})
+        assert set(options) <= {'n_threads', 'overwrite_ld'}
+        if 'overwrite_ld' in options:
+            assert type(options['overwrite_ld']) is bool
+            assert backend.get('public_overwrite_api') is True
+        requested = options.get('overwrite_ld', False)
+        assert type(requested) is bool
+        assert observation['requested'] is requested
+        assert observation['qc_present'] is requested
+        assert observation['case_id'] == case['case_id']
+        assert observation['binding_sha256'] == self.binding_sha256
+        assert observation['oracle_sha256'] == self.oracle_sha256
+        assert observation['contract_sha256'] == self.contract_sha256
+        assert observation['before_R_sha256'] == case['input_sha256']['R.bin']
+        geometry = observation['before_R_geometry']
+        assert geometry == observation['after_R_geometry']
+        assert geometry['dtype'] == '<f8' and geometry['shape'] == [case['p'],case['p']]
+        assert geometry['strides'] == [8*case['p'],8]
+        assert geometry['c_contiguous'] is True and geometry['writeable'] is True
+        assert type(geometry['data_pointer']) is int and geometry['data_pointer'] > 0
+        assert observation['before_non_R_sha256'] == observation['after_non_R_sha256']
+        assert len(observation['before_non_R_sha256']) == 64
+        if backend.get('public_overwrite_api'):
+            assert observation['fit_requested'] is requested
+            assert backend['overwrite_binding_sha256'] == self.binding_sha256
+        else:
+            assert not requested and observation['fit_requested'] is None
+        if requested:
+            row = self.rows[case['case_id']]
+            assert observation['after_R_sha256'] == row['expected_R_sha256']
+            assert observation['qc'] == dict(action=row['expected_action'],
+                original_rss_scale=row['rss_original_scale'])
+            assert observation['fit_input_n'] == row['original_n']
+            # This is an oracle expectation, not a claim of observing a private
+            # operator scalar. Exact-parent alpha qualification tests scaling.
+            assert observation['expected_working_scale'] == row['expected_working_scale']
+        else:
+            assert observation['after_R_sha256'] == observation['before_R_sha256']
+            assert observation['qc'] is None
+            assert observation['expected_working_scale'] is None
+        return True

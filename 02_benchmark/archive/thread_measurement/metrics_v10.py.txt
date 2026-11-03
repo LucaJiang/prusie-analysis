@@ -1,0 +1,95 @@
+"""V9 runtime veto plus predeclared applicability and incremental-peak decisions."""
+import hashlib
+import numpy as np
+from gate_engine import observed_gate, robustness, strata_for, ROUND_SEED, RESAMPLES
+
+def memory_summary(samples):
+    """Summarize nonnegative byte peaks without dividing by a zero median."""
+    values=np.asarray(samples,dtype=np.float64)
+    if values.ndim!=1 or not values.size or not np.isfinite(values).all() or np.any(values<0):
+        raise ValueError('Require a nonempty one-dimensional set of finite nonnegative byte peaks')
+    median=float(np.median(values))
+    q1,q3=np.quantile(values,[.25,.75],method='linear')
+    return dict(median=median,iqr=float(q3-q1),q1=float(q1),q3=float(q3),
+        minimum=float(values.min()),maximum=float(values.max()),
+        relative_range=float(np.ptp(values)/median) if median>0 else None,repeats=values.tolist())
+
+def majority(values):
+    values=np.asarray(values)
+    return bool(np.count_nonzero(values)>len(values)/2)
+
+def decision(parent_times,candidate_times,parent_memory,candidate_memory,rows,applicable,kind):
+    pt,ct,pm,cm=map(lambda a:np.asarray(a,dtype=np.float64),
+        (parent_times,candidate_times,parent_memory,candidate_memory))
+    if not (pt.shape==ct.shape==pm.shape==cm.shape) or pt.ndim!=2 or pt.shape[1] not in (8,16):
+        raise ValueError('Require matched case × retained-round arrays (8 or16)')
+    if len(rows)!=pt.shape[0]:raise ValueError('Case metadata does not match arrays')
+    if any(not np.isfinite(a).all() for a in (pt,ct,pm,cm)) or np.any(pt<=0) or np.any(ct<=0):
+        raise ValueError('Times must be finite/positive; memory must be finite')
+    if np.any(pm<0) or np.any(cm<0):raise ValueError('Incremental peaks must be nonnegative')
+    mask=np.asarray(applicable,dtype=bool)
+    if mask.shape!=(len(rows),):raise ValueError('Require one predeclared applicability value per case')
+    if kind not in ('speed','memory-only','thread-option','default-veto','diagnostic'):
+        raise ValueError('Unknown candidate category')
+    n,rounds=pt.shape
+    draws=np.random.default_rng(ROUND_SEED).integers(0,rounds,size=(RESAMPLES,n,rounds))
+    case=np.arange(n)[None,:,None]
+    strata=strata_for(rows)
+    ratios=np.median(ct/pt,axis=1)
+    full_observed=observed_gate(ratios,pt,ct,strata)
+    full_quality=robustness(pt,ct,strata,full_observed,draws=draws)
+    selected=ratios[mask]
+    applicable_n=int(mask.sum())
+    runtime_pass=majority(selected<1)
+    ratio_draws=np.median((ct/pt)[case,draws],axis=2)
+    runtime_pass_draws=np.count_nonzero(ratio_draws[:,mask]<1,axis=1)>applicable_n/2
+    memory_parent=np.median(pm,axis=1)
+    memory_candidate=np.median(cm,axis=1)
+    memory_delta=memory_candidate-memory_parent
+    memory_pass=majority(memory_delta[mask]<0)
+    memory_draws=np.median(cm[case,draws],axis=2)-np.median(pm[case,draws],axis=2)
+    memory_pass_draws=np.count_nonzero(memory_draws[:,mask]<0,axis=1)>applicable_n/2
+    runtime_agreement=float(np.mean(runtime_pass_draws==runtime_pass))
+    memory_agreement=float(np.mean(memory_pass_draws==memory_pass))
+    veto_pass=not full_observed['veto']
+    veto_quality=full_quality['veto_agreement']>=.95
+    runtime_quality=runtime_agreement>=.95
+    memory_quality=memory_agreement>=.95
+    if applicable_n<16:
+        accepted=False;trustworthy=False;state='UNRESOLVED_TOO_FEW_APPLICABLE'
+    elif kind=='memory-only':
+        trustworthy=memory_quality and veto_quality
+        accepted=memory_pass and veto_pass and trustworthy
+        state='ACCEPTED' if accepted else 'REJECTED' if trustworthy else 'UNRESOLVED_QUALITY'
+    elif kind=='default-veto':
+        trustworthy=veto_quality
+        accepted=veto_pass and trustworthy
+        state='ACCEPTED' if accepted else 'REJECTED' if trustworthy else 'UNRESOLVED_QUALITY'
+    elif kind=='thread-option':
+        trustworthy=runtime_quality
+        accepted=runtime_pass and trustworthy
+        state='ACCEPTED' if accepted else 'REJECTED' if trustworthy else 'UNRESOLVED_QUALITY'
+    elif kind=='speed':
+        trustworthy=runtime_quality and veto_quality
+        accepted=runtime_pass and veto_pass and trustworthy
+        state='ACCEPTED' if accepted else 'REJECTED' if trustworthy else 'UNRESOLVED_QUALITY'
+    else:
+        accepted=False;trustworthy=runtime_quality and veto_quality;state='DIAGNOSTIC_ONLY'
+    return dict(state=state,accepted=bool(accepted),trustworthy=bool(trustworthy),
+        kind=kind,cases=n,applicable_cases=applicable_n,rounds=rounds,
+        applicability_mask=mask.tolist(),applicable_ids=[r['case_id'] for r,m in zip(rows,mask) if m],
+        runtime=dict(wins=int(np.sum(selected<1)),ties=int(np.sum(selected==1)),regressions=int(np.sum(selected>1)),
+            strict_majority_pass=runtime_pass,decision_agreement=runtime_agreement,
+            median_applicable_ratio=float(np.median(selected)) if applicable_n else None,
+            paired_case_ratios=ratios.tolist(),all_case_observed=full_observed,
+            complete_veto_quality=full_quality,default_path_veto_pass=bool(veto_pass and veto_quality)),
+        memory=dict(wins=int(np.sum(memory_delta[mask]<0)),ties=int(np.sum(memory_delta[mask]==0)),
+            regressions=int(np.sum(memory_delta[mask]>0)),strict_majority_pass=memory_pass,
+            decision_agreement=memory_agreement,parent_case_median_incremental_bytes=memory_parent.tolist(),
+            candidate_case_median_incremental_bytes=memory_candidate.tolist(),case_median_deltas_bytes=memory_delta.tolist(),
+            median_applicable_delta_bytes=float(np.median(memory_delta[mask])) if applicable_n else None),
+        resampling=dict(seed=ROUND_SEED,resamples=RESAMPLES,draws_sha256=hashlib.sha256(draws.tobytes()).hexdigest(),
+            pairing='Same seeded within-case paired-round indices for time, memory and complete runtime veto',
+            memory_definition='Compare medians of resampled incremental peaks, rather than ratios or median pairwise differences'),
+        raw=dict(parent_times=pt.tolist(),candidate_times=ct.tolist(),parent_incremental_peaks=pm.tolist(),
+            candidate_incremental_peaks=cm.tolist(),rows=rows))

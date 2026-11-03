@@ -1,0 +1,168 @@
+"""One fresh-process public call with v10 memory boundaries and R-alpha checks."""
+from common import *
+import argparse
+import platform
+import resource
+import socket
+import sys
+import time
+import numpy as np
+from overwrite_checks import OverwriteOracle, non_ld_input_sha, ld_geometry
+
+parser=argparse.ArgumentParser()
+parser.add_argument('--case',required=True)
+parser.add_argument('--backend',required=True)
+parser.add_argument('--output',required=True)
+parser.add_argument('--round',type=int,required=True)
+parser.add_argument('--cpus',required=True)
+parser.add_argument('--input-root',required=True)
+parser.add_argument('--nonformal',action='store_true')
+parser.add_argument('--audit',action='store_true')
+parser.add_argument('--observe-dir')
+a=parser.parse_args()
+expected_cpus=expand(a.cpus)
+assert set(os.sched_getaffinity(0))==expected_cpus
+resource.setrlimit(resource.RLIMIT_AS,(16*1024**3,16*1024**3))
+import prusie
+import prusie._native as native
+
+def arrsha(value):
+    return hashlib.sha256(memoryview(np.ascontiguousarray(value)).cast('B')).hexdigest()
+
+def proc_memory():
+    found={}
+    for line in Path('/proc/self/status').read_text().splitlines():
+        if line.startswith(('VmHWM:','VmRSS:','VmSize:','VmPeak:','Threads:')):
+            key,value=line.split(':',1)
+            found[key]=int(value.split()[0])*(1024 if key!='Threads' else 1)
+    return found
+
+def safe(value):
+    if isinstance(value,dict):return {str(k):safe(v) for k,v in value.items()}
+    if isinstance(value,(list,tuple)):return [safe(v) for v in value]
+    if isinstance(value,np.ndarray):return safe(value.tolist())
+    if isinstance(value,np.generic):return safe(value.item())
+    if isinstance(value,float) and not np.isfinite(value):return None
+    return value
+
+cases=read(BUNDLE/'case_manifest.json')['cases']
+c=next(c for c in cases if c['case_id']==a.case)
+overwrite_oracle=OverwriteOracle(BUNDLE,cases)
+del cases
+backend=read(BUNDLE/'backends.json')['backends'][a.backend]
+assert sha(native.__file__)==backend['native_sha256']
+numpy_expected=backend.get('numpy_identity')
+assert numpy_expected or a.nonformal or a.audit
+if numpy_expected:
+    assert np.__version__==numpy_expected['version']
+    site=Path(sys.prefix)/'lib/python3.12/site-packages'
+    assert Path(np.__file__).resolve()==(site/'numpy/__init__.py').resolve()
+    assert all(sha(site/name)==digest for name,digest in numpy_expected['files'].items())
+assert all(os.environ.get(k)=='1' for k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS',
+    'MKL_NUM_THREADS','BLIS_NUM_THREADS','PRUSIE_NUM_THREADS','RAYON_NUM_THREADS'))
+root=Path(a.input_root)
+paths={k:root/v for k,v in c['paths'].items()}
+cp=read(paths['case'])
+p=c['p']
+ids=paths['variant_ids'].read_text().splitlines()
+assert ids==c['ordered_snps'] and len(ids)==p and len(set(ids))==p
+assert cp['parameters']==c['settings'] and c['settings']['max_iter']==100
+assert paths['R_C'].stat().st_size==8*p*p
+# Direct C loading avoids a pre-call p² conversion allocation and stale HWM.
+r=np.fromfile(paths['R_C'],dtype='<f8').reshape(p,p)
+z=np.fromfile(paths['z'],dtype='<f8')
+assert z.shape==(p,) and r.flags.c_contiguous
+before={'R':arrsha(r),'z':arrsha(z)}
+before_R_geometry=ld_geometry(r)
+assert all(before[k]==c['input_sha256'][k+'.bin'] for k in before)
+options=backend.get('call_options',{})
+assert set(options)<= {'n_threads','overwrite_ld'}
+if 'overwrite_ld' in options:
+    assert type(options['overwrite_ld']) is bool and backend.get('public_overwrite_api') is True
+inputs=dict(z=z,R=r,variant_ids=ids,**c['settings'],**options)
+before_non_R=non_ld_input_sha(inputs)
+out=Path(a.output)
+out.parent.mkdir(parents=True,exist_ok=True)
+if a.observe_dir:
+    assert a.audit
+    observe=Path(a.observe_dir)
+    write(observe/'ready.json',dict(pid=os.getpid(),n_threads=options.get('n_threads',1),
+        cpus=sorted(expected_cpus),case_id=a.case,baseline_tasks=sorted(int(p.name) for p in Path('/proc/self/task').iterdir())))
+    deadline=time.monotonic()+30
+    while not (observe/'start').exists():
+        assert time.monotonic()<deadline,'Observer did not acknowledge readiness'
+        time.sleep(.002)
+baseline=proc_memory()
+start=time.perf_counter_ns()
+fit=prusie.susie_rss(**inputs)
+elapsed=time.perf_counter_ns()-start
+after=proc_memory()
+if a.observe_dir:
+    write(observe/'returned.json',dict(pid=os.getpid(),monotonic_ns=time.monotonic_ns(),
+        final_tasks=sorted(int(p.name) for p in Path('/proc/self/task').iterdir())))
+# All independent verification starts after memory capture.
+requested_overwrite=options.get('overwrite_ld',False)
+ld_validation=dict(requested=requested_overwrite,case_id=a.case,
+    binding_sha256=overwrite_oracle.binding_sha256,
+    oracle_sha256=overwrite_oracle.oracle_sha256,contract_sha256=overwrite_oracle.contract_sha256,
+    before_R_sha256=before['R'],after_R_sha256=arrsha(r),
+    before_R_geometry=before_R_geometry,after_R_geometry=ld_geometry(r),
+    before_non_R_sha256=before_non_R,after_non_R_sha256=non_ld_input_sha(inputs),
+    fit_requested=fit.params.get('overwrite_ld'),fit_input_n=fit.params.get('input_n'),
+    qc=safe(fit.qc.get('ld_overwrite')),qc_present='ld_overwrite' in fit.qc,
+    expected_working_scale=(overwrite_oracle.rows[a.case]['expected_working_scale']
+                            if requested_overwrite else None))
+ld_validation_error=None
+try:
+    ld_postcondition=overwrite_oracle.audit(c,backend,ld_validation)
+except (AssertionError,KeyError,TypeError,ValueError) as error:
+    ld_postcondition=False
+    ld_validation_error=type(error).__name__+': '+str(error)
+refmeta=c['reference']
+assert sha(paths['alpha'])==refmeta['alpha_file_sha256']
+ref=(np.load(paths['alpha'],allow_pickle=False) if paths['alpha'].suffix=='.npy' else
+    np.fromfile(paths['alpha'],dtype='<f8').reshape(refmeta['shape'],order=refmeta.get('order','C')))
+assert arrsha(ref)==refmeta['alpha_values_sha256']
+alpha=np.asarray(fit.alpha)
+pip=np.asarray(fit.pip)
+shape=alpha.shape==tuple(refmeta['shape'])==(min(c['settings']['L'],p),p)
+params=getattr(fit,'params',None)
+required=dict(c['settings'],**options)
+if backend.get('public_thread_api'):required['n_threads']=options.get('n_threads',1)
+if backend.get('public_overwrite_api'):required['overwrite_ld']=requested_overwrite
+missing=sorted(set(required)-set(params)) if isinstance(params,dict) else sorted(required)
+model=not missing and all(bool(np.array_equal(params[k],v)) for k,v in required.items())
+valid=dict(shape=shape,finite=bool(np.isfinite(alpha).all() and np.isfinite(pip).all()),
+    probability=bool(np.all((alpha>=0)&(alpha<=1)) and np.all((pip>=0)&(pip<=1))),
+    mass=bool(np.max(abs(alpha.sum(axis=1)-1))<=1e-10),snp_order=list(fit.variant_ids)==ids,
+    ld_postcondition=ld_postcondition,
+    iterations=bool(1<=fit.niter<=c['settings']['max_iter']),
+    variance=bool(np.isfinite(fit.V).all() and np.all(np.asarray(fit.V)>=0) and np.isfinite(fit.sigma2) and fit.sigma2>0),
+    moments=bool(np.isfinite(fit.mu).all() and np.isfinite(fit.mu2).all() and np.all(np.asarray(fit.mu2)>=0)),
+    required_model_parameters=bool(model))
+if requested_overwrite:
+    valid['inputs_unchanged_except_consumed_R']=ld_validation['before_non_R_sha256']==ld_validation['after_non_R_sha256']
+else:
+    valid['inputs_unchanged']=all(arrsha(inputs[k])==before[k] for k in before)
+error=float(np.max(abs(alpha-ref))) if shape else None
+passed=all(valid.values()) and error is not None and error<=1e-5
+np.savez(out.with_suffix('.npz'),alpha=alpha,pip=pip)
+write(out,dict(worker_sha256=sha(__file__),case_id=a.case,panel_name=c['panel_name'],
+    backend=a.backend,round=a.round,kind='warmup' if a.round==0 else 'retained',
+    seconds=elapsed/1e9,label='UNTIMED_THREAD_AUDIT' if a.audit else 'NONFORMAL_LOCAL_SMOKE' if a.nonformal else 'FORMAL_SLURM_V10',
+    status='ok' if passed else 'failed',validity=valid,missing_model_parameter_keys=missing,
+    max_R_alpha_error=error,per_layer_max_R_alpha_error=np.max(abs(alpha-ref),axis=1).tolist() if shape else None,
+    alpha_sha256=arrsha(alpha),niter=int(fit.niter),converged=bool(fit.converged),
+    cs_components=[int(x) for x in fit.sets['cs_index']],
+    cs_members={str(int(k)):[int(j) for j in v] for k,v in zip(fit.sets['cs_index'],fit.sets['cs'])},
+    convergence=safe(getattr(fit,'convergence',{})),call_options=options,
+    ld_validation=ld_validation,ld_validation_error=ld_validation_error,
+    recorded_fit_warnings=list(map(str,getattr(fit,'warnings',[]))),
+    exact_activation=safe(fit.params.get('exact_activation')),
+    baseline_memory_bytes=baseline,after_call_memory_bytes=after,
+    incremental_peak_bytes=after['VmHWM']-baseline['VmRSS'],
+    baseline_hwm_excess_bytes=baseline['VmHWM']-baseline['VmRSS'],total_peak_bytes=after['VmHWM'],
+    peak_rss_mib=after['VmHWM']/1024**2,
+    affinity=sorted(os.sched_getaffinity(0)),pid=os.getpid(),hostname=socket.gethostname(),
+    python=sys.version,numpy=np.__version__,numpy_identity=numpy_expected,native_sha256=backend['native_sha256']))
+assert passed,valid

@@ -1,0 +1,74 @@
+{
+  "inputs": {
+    "finngen_summary": "../private-inputs/finngen_R13_T2D.gz",
+    "finngen_manifest": "../private-inputs/finngen_R13_manifest.tsv",
+    "gtex_root": "../private-inputs/GTEx_v11",
+    "fasta": "../private-inputs/GRCh38_full_analysis_set_plus_decoy_hla.fa",
+    "reference_root": "../private-inputs/strict_snp_maf05_v1",
+    "source_pgen_prefix": "../private-inputs/all_hg38",
+    "source_index": "../private-inputs/source_index",
+    "sample_dir": "../private-inputs/samples",
+    "plink1": "../private-inputs/plink",
+    "plink2": "../private-inputs/plink2",
+    "scratch": "../private-output",
+    "pedigree": "../private-inputs/pedigree.txt",
+    "corrected_psam": "../private-inputs/corrected.psam",
+    "kinship_exclusions": "../private-inputs/kinship_exclusions.txt",
+    "kinship_pairs": "../private-inputs/kinship_pairs.txt"
+  },
+  "scientific_settings": {
+    "L": 10,
+    "check_input": false,
+    "check_null_threshold": 0.0,
+    "check_prior": true,
+    "coverage": 0.95,
+    "estimate_prior_method": "optim",
+    "estimate_prior_variance": true,
+    "estimate_residual_variance": false,
+    "finite_sample": "Known-n RSS adjustment once in each backend, using independently justified GTEx Whole_Blood N.",
+    "gtex_whole_blood_n": 800,
+    "gwas_n": 486019,
+    "gwas_n_cases": 89727,
+    "gwas_n_controls": 396292,
+    "gwas_n_formula": "N_cases + N_controls; R13 GWAS manifest analysis counts, Gaussian RSS approximation to binary trait",
+    "max_iter": 100,
+    "min_abs_corr": 0.5,
+    "n_purity": "full p; no random CS subsampling",
+    "null_weight": 0.0,
+    "prior_tol": 1e-09,
+    "prior_weights": "uniform over all aligned QC-passing variants",
+    "r_tol": 1e-08,
+    "refine": false,
+    "region_algorithm_commit": "22bfebae85ef9806f350d8591fa2e254d2ff52b5",
+    "residual_variance": 1.0,
+    "scaled_prior_variance": 0.2,
+    "standardize": true,
+    "tol": 0.001
+  },
+  "benchmark": {
+    "python": "../.venv-benchmark/bin/python",
+    "rscript": "../R/bin/Rscript",
+    "r_build": "../R/bin/R",
+    "r_libs": [
+      "../R/library"
+    ],
+    "r_libs_user": [
+      "../R/library"
+    ],
+    "cases_manifest": "../private-output/cases.json",
+    "primary_case_manifest": "../03_results/primary_case_manifest.tsv",
+    "output_dir": "../private-output/fits",
+    "instrumented": false
+  },
+  "supplementary": {
+    "primary_table": "../03_results/benchmark_primary.tsv",
+    "gwas_cases": "../private-output/cases",
+    "eqtl_cases": "../private-output/cases",
+    "saved_results": "../private-output/saved-campaign",
+    "cs_results": "../private-output/cs-membership",
+    "thread_records": "../private-inputs/v030_m1.json",
+    "thread_table": "../private-output/thread_scaling.tsv",
+    "case_manifest": "../private-inputs/original_case_manifest.json",
+    "public_manifest": "../private-output/primary_case_manifest.tsv"
+  }
+}

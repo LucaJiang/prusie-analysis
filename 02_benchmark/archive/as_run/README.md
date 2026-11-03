@@ -1,0 +1,1 @@
+These eight files restore the exact archived bytes identified by the original checksums.json. Other files already match those hashes and remain in the parent directory. The parent directory is an unchanged copy of the published archive, including its explanation of later name redactions.
