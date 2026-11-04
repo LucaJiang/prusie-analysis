@@ -1,1 +1,0 @@
-These source copies retain the importer and release-binding code for the earlier 0.3.0 memory, thread and nested-window measurements. The main paired timing campaign superseded its primary runtime series. They require the original evidence hierarchy; they are not a Level A entry point and were not re-executed. The .txt suffix marks historical source.

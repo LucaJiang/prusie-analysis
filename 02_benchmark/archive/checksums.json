@@ -34,7 +34,6 @@
   "nodes/cpunode-029/700793/host_samples.jsonl.gz": "b41653ae74c9b7fd9b72348e090350a7a1b5b3f249d20510e8ce04a05f4a91e9",
   "nodes/cpunode-029/700793/node_complete.json": "cc44f16d0c2f254168c35f57a05cdb8972baf240b70caad780997f0676a06137",
   "nodes/cpunode-029/700793/topology.json": "c1f55f5dc1d381b265a1e63e2f8ed8fa0d5f5fae131cf6b05fa153537dab5d7b",
-  "qualification.json": "cdbd75ea28cd0d7dc77594009f4b0fab4be2e5469a8387be64427cdd8d7d9741",
   "reconstruct_ld.py.txt": "59caf67ec939344ac746e808da96c39fe80d6ae916dc02da665e23012cce3c6e",
   "stage_timer.py.txt": "d904907dedf5a8afae76a1dc6d606e14e133f47266977e09449306946f45011b",
   "summarize.py.txt": "a148ec99d9873527a35e2eb62e964efe96c22760b01ddfbcb1c839c56a33212e",
@@ -47,6 +46,5 @@
   "v1_scripts/m2_reference.R.txt": "64f25b91ca847444346bfe01ac709550c00e4416f54ed8524dfb8b3954e90393",
   "v1_scripts/reconstruct_ld.py.txt": "59caf67ec939344ac746e808da96c39fe80d6ae916dc02da665e23012cce3c6e",
   "v1_scripts/summarize.py.txt": "1485aa4a729577fe3285048d5791aca9234be57fd2bf2ce0443041d60a6902bf",
-  "v1_to_v2.diff": "22b02e6a036a71335114eb58cbda4bffeb403613c3ef5419cfb62884ed85fa90",
-  "v2_smoke.json": "1939ac4d5675075bc690736c79d1be64804a80ae35835e15544b18d72735576a"
+  "v1_to_v2.diff": "22b02e6a036a71335114eb58cbda4bffeb403613c3ef5419cfb62884ed85fa90"
 }

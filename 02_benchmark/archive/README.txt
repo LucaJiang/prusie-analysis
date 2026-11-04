@@ -29,14 +29,13 @@ parameter changed. The original bytes are in Git history before commit
   and [native_boundaries.txt](native_boundaries.txt): native measurement spans.
 - [fit_timer.R.txt](fit_timer.R.txt), [R_boundaries.txt](R_boundaries.txt) and
   [blas_probe.c.txt](blas_probe.c.txt): R measurement and monotonic/BLAS probes.
-- [environment.json](environment.json) and [qualification.json](qualification.json):
-  original/derived identities and the completed eight-case qualification.
+- [environment.json](environment.json): original/derived software identities.
 - [m2_native.py.diff](m2_native.py.diff) and [m2_reference.R.diff](m2_reference.R.diff):
   initial harness changes from the earlier complete-call timing scripts.
   [v1_to_v2.diff](v1_to_v2.diff) records the later repeat-count amendment.
 - [summarize.py.txt](summarize.py.txt): full-panel authentication and aggregation.
-- [v1_protocol.json](v1_protocol.json), [v1_adoption.json](v1_adoption.json) and
-  [v2_smoke.json](v2_smoke.json): repeat-count amendment and v2 end-to-end smoke.
+- [v1_protocol.json](v1_protocol.json) and [v1_adoption.json](v1_adoption.json):
+  repeat-count amendment and the adopted v1 cases.
 
 Protocol v2 uses one warmup and three retained calls per backend. All 24
 completed v1 cases keep their original raw results and use their first three

@@ -56,8 +56,9 @@ times divided by the corresponding prusie total. Ratios of case medians and
 geometric mean ratios are separate summaries. The manuscript includes all
 fixed cases, including iteration-limit fits and alpha discrepancies.
 
-[archive/](archive/README.txt) preserves the published execution archive verbatim,
-including the original `checksums.json`. Eight published copies had subsequently
+[archive/](archive/README.txt) preserves the execution archive for the reported
+measurements. Pre-campaign qualification and smoke records, which the manuscript
+does not report, were removed; `checksums.json` lists the remaining files. Eight published copies had subsequently
 redacted names, as that README explains. Their original bytes, recovered from
 Git history and verified against the retained hashes, are in
 [archive/as_run/](archive/as_run/README.md); unchanged files stay in the parent
