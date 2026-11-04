@@ -11,6 +11,8 @@ from _bench_style import (
     COLORS,
     DARK,
     DOUBLE_COLUMN_IN,
+    GIB,
+    HALO,
     HIGHLIGHT,
     INK,
     INK2,
@@ -175,4 +177,77 @@ def fitting_by_variants_figure(records, output, filename="supp_fitting"):
     ]
     fig.legend(handles=handles, loc="upper center", ncol=2, bbox_to_anchor=(0.53, 1.0),
                handlelength=2.4, columnspacing=2.4)
+    save(fig, output, filename)
+
+
+def peak_memory_figure(records, output, filename="supp_memory"):
+    style("prusie-memory")
+    fig, axes = plt.subplots(2, 2, figsize=(DOUBLE_COLUMN_IN, 112 * MM), sharex="col")
+    fig.subplots_adjust(left=0.085, right=0.99, bottom=0.09, top=0.9, wspace=0.16, hspace=0.16)
+    for col, panel in enumerate(PANELS):
+        rows = primary(records, panel)
+        p = np.array([r["p"] for r in rows], dtype=float)
+        order = np.argsort(p)
+        peak = {b: np.array([r[key]["peak_rss_diagnostic_bytes"] for r in rows], dtype=float) / GIB
+                for b, key in (("susieR", "R"), ("prusie", "prusie"))}
+        ax = axes[0, col]
+        for backend, y in peak.items():
+            if panel == "GWAS":
+                ax.scatter(p, y, s=6, color=COLORS[backend], alpha=0.45, linewidths=0, zorder=2)
+            else:
+                density_scatter(ax, p, y, COLORS[backend])
+        for backend, y in peak.items():
+            median_line(ax, *binned_median(p[order], y[order], *BINS[panel]), backend)
+        line_p = np.geomspace(p.min() * 0.7, p.max() * 1.4, 200)
+        ax.plot(line_p, 8 * line_p**2 / GIB, color=INK2, lw=0.8, ls=(0, (4, 2)), zorder=4)
+        note(ax, f"median prusie {np.median(peak['prusie']) * 1024:.0f} MiB\n"
+                 f"median susieR {np.median(peak['susieR']) * 1024:.0f} MiB")
+        ax.set_yscale("log")
+        plain_log_axis(ax.yaxis, [0.1, 0.2, 0.5, 1, 2, 5, 10, 20])
+        ax.set_ylim(0.05, 30)
+        grid(ax)
+        ax.set_title(TITLES[panel])
+
+        ax = axes[1, col]
+        ratio = peak["susieR"] / peak["prusie"]
+        if panel == "GWAS":
+            ax.scatter(p, ratio, s=6, color=CASE_POINT, alpha=0.55, linewidths=0, zorder=2)
+        else:
+            density_scatter(ax, p, ratio, CASE_POINT, light=0.8)
+        cx, cy = binned_median(p[order], ratio[order], *BINS[panel])
+        ax.plot(cx, cy, color=INK, lw=1.3, marker="o", ms=3.4, mfc="white", mec=INK, mew=1.0,
+                path_effects=HALO, zorder=5)
+        median = float(np.median(ratio))
+        ax.axhline(median, color=INK2, lw=0.6, ls=(0, (1, 1.5)), zorder=3)
+        ax.axhline(1, color=MUTED, lw=0.6, zorder=1)
+        ax.text(0.99, 1.12, "equal peak", transform=ax.get_yaxis_transform(), ha="right",
+                va="bottom", fontsize=6, color=MUTED)
+        q1, q3 = np.quantile(ratio, [0.25, 0.75])
+        note(ax, f"median {median:.2f} [IQR {q1:.2f}–{q3:.2f}]\n"
+                 f"range {ratio.min():.2f}–{ratio.max():.2f}")
+        ax.set_ylim(0, 9)
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
+        grid(ax)
+        ax.set_xscale("log")
+        ax.set_xlabel("Variants in region, $p$")
+    axes[0, 0].set_ylabel("Process peak memory (GiB)")
+    axes[1, 0].set_ylabel("Paired peak ratio, susieR / prusie")
+    plain_log_axis(axes[1, 0].xaxis, [2000, 5000, 10000, 20000])
+    axes[1, 0].set_xlim(1400, 22000)
+    plain_log_axis(axes[1, 1].xaxis, [10, 100, 1000])
+    axes[1, 1].set_xlim(5, 8500)
+    for ax, letter in zip(axes.flat, "abcd", strict=True):
+        panel_letter(ax, letter, x=-0.12 if ax in axes[:, 0] else -0.09, y=1.025)
+    handles = [
+        Line2D([], [], color=DARK[b], marker="o", mfc="white", mec=DARK[b], mew=1.0, lw=1.3,
+               ms=3.6, label=LABELS[b])
+        for b in ("prusie", "susieR")
+    ] + [
+        Line2D([], [], color=INK2, lw=0.8, ls=(0, (4, 2)), label="One dense LD matrix, $8p^2$ bytes"),
+        Line2D([], [], color=INK, marker="o", mfc="white", mec=INK, mew=1.0, lw=1.3, ms=3.6,
+               label="Binned median ratio"),
+        Line2D([], [], color=INK2, lw=0.6, ls=(0, (1, 1.5)), label="Panel median ratio"),
+    ]
+    fig.legend(handles=handles, loc="upper center", ncol=5, bbox_to_anchor=(0.54, 1.0),
+               handlelength=2.2, columnspacing=1.6, handletextpad=0.4)
     save(fig, output, filename)

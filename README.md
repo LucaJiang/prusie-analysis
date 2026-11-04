@@ -67,6 +67,7 @@ fonts and pixels, but not in content.
 | Software architecture | `make_architecture.py` | `architecture.svg` |
 | Alpha/PIP agreement; fitting-stage time | `make_agreement_fitting_figures.py` | `benchmark_records.jsonl.gz` |
 | Fig. S4, per-case speed-up distribution | `make_speedup_figure.py` | `benchmark_primary.tsv` |
+| Fig. S6, peak memory | `make_memory_figure.py` | `benchmark_records.jsonl.gz` |
 | Nested windows | `make_supplement_figures.py` | `benchmark_windows.tsv` |
 | Full analysis report | `make_report_figure.py` | `report_snippets/` |
 | Dataset, timing, agreement and memory tables; numbers in the text | `summarize_benchmark.py`, `manuscript_numbers.py` | records, `primary_case_manifest.tsv`, `cs_membership.tsv` |
