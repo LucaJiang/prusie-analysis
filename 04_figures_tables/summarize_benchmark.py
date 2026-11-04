@@ -31,11 +31,9 @@ def main():
     rows = []
     for record in sorted(records, key=lambda entry: entry["case_key"]):
         row = {name: record[name] for name in ("case_key", "case_id", "panel", "kind", "p", "alpha_pass", "max_abs_alpha_error", "max_abs_pip_error")}
-        row["protocol_version"] = record["measurement_protocol_version"]
         row["host"] = record["host"]
         row["job_id"] = record["job_id"]
         row["ld_sha256"] = record["ld_sha256"]
-        row["memory_process_calls"] = 8 if record["retained_selection"] == "first3of7" else 4
         for source_backend, backend in (("R", "susieR"), ("prusie", "prusie")):
             result = record[source_backend]
             for metric, key in (("", "times"), ("fitting_", "fitting_times")):
@@ -58,15 +56,13 @@ def main():
         rows.append(row)
     summary = {
         "records_sha256": hashlib.sha256(records_path.read_bytes()).hexdigest(),
-        "protocol_export_sha256": hashlib.sha256((DATA / "protocol_at_summary.json").read_bytes()).hexdigest(),
         "timing_source_protocol_sha256": json.loads((DATA / "benchmark_manuscript_protocol.json").read_text())["timing_source_protocol_sha256"],
         "retained_calls_per_backend": 3,
         "paired_ratio": "Per case: median of three susieR calls / median of three prusie calls; panel summary: median of these ratios",
         "total_software_seconds": "Sum of per-case median complete-call times, one representative analysis per case; not the sum of repeated calls or a measured parallel makespan",
         "clock_boundary": "Already loaded arrays enter public susie_rss through returned result, including software validation and preparation; excludes disk reads, LD reconstruction, imports, explicit GC, comparisons and serialization",
         "memory_source": "Backend timing-process high-water marks in benchmark_records.jsonl.gz: R.peak_rss_diagnostic_bytes and prusie.peak_rss_diagnostic_bytes",
-        "memory_boundary": "One fresh process per case/backend; includes interpreter, libraries, loaded inputs, warmup and retained calls; captured after the final call before numerical comparison or serialization; not an isolated fitting allocation or an independent single-call memory experiment",
-        "memory_process_calls": "Four calls for 14,339 cases; eight calls for 24 initial-schedule cases. Time summaries use three retained calls for every case, but process high-water marks cannot be truncated retrospectively.",
+        "memory_boundary": "One fresh process per case/backend; includes interpreter, libraries, loaded inputs, the warm-up and the three timed calls; captured after the final call before numerical comparison or serialization; not an isolated fitting allocation or an independent single-call memory experiment",
         "panels": {},
     }
     for panel, expected_count in EXPECTED.items():

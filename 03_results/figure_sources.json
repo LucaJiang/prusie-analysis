@@ -22,7 +22,7 @@
   "supp_scaling.pdf": {
     "sha256": "b488951847d658cbe82909ce913d70c5537abd8d4c1d2d26625019bfae594922",
     "source": "benchmark_windows.tsv",
-    "source_sha256": "257e4fbd266372ea6ed2f3b4798d9a566e1f9d0ff9f5ea75c5c779c19e99e9b1",
+    "source_sha256": "e69b2c130de626001dc01fbd8c0af85d5db9421e0eddc5eee409c9779f2b5f81",
     "generator": "scripts/make_supplement_figures.py",
     "hardware": "exclusive AMD EPYC 7742 compute nodes"
   }

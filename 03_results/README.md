@@ -27,10 +27,8 @@ Main-panel and nested-window memory is `R.peak_rss_diagnostic_bytes` and
 `prusie.peak_rss_diagnostic_bytes` in the original records: a full backend-process
 high-water mark captured after the last call, before numerical comparison and
 serialization. It includes interpreter, libraries, loaded inputs, warmup and
-repeated fits. Each backend runs four calls, except the 24 initial-schedule cases
-whose peaks cover eight calls. Their first three retained times are used, but a
-process peak cannot retrospectively be truncated. These are not independent
-single-call measurements or fitting-only increments. R uses VmHWM and Python
+repeated fits. Each backend process runs one warm-up and three timed calls.
+These are not independent single-call measurements or fitting-only increments. R uses VmHWM and Python
 uses ru_maxrss; the latter may also include pre-exec image residency.
 
 MiB = 2²⁰ bytes; GiB = 2³⁰ bytes.

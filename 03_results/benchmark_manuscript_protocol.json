@@ -26,7 +26,7 @@
   "fitting": {"L": 10, "max_iter": 100, "tol": 0.001, "estimate_prior_variance": true, "estimate_prior_method": "optim", "estimate_residual_variance": false, "residual_variance": 1.0, "coverage": 0.95, "min_abs_corr": 0.5, "full_credible_set_purity": true, "refine": false, "overwrite_ld": false},
   "timing": {
     "retained_calls": 3, "warmup_calls": 1,
-    "selection": "First three retained calls for 24 initial-schedule cases; all three retained calls for 14339 others; no outcome-based selection.",
+    "selection": "All three timed calls of every case; no outcome-based selection.",
     "complete_call": "Accept already loaded arrays through returned results, including validation and RSS preparation. Excludes imports, disk reads, LD reconstruction, explicit garbage collection, numerical comparison and serialization.",
     "fitting_stage": "Direct same-call spans for solver initialization, IBSS/SER, convergence/ELBO and final posterior/credible-set results; excludes full input/LD preparation. Native implicit Gram scaling remains fitting work; R materializes its scaled Gram before its fitting span.",
     "paired_ratio": "Per case, susieR median of three retained calls divided by prusie median of three retained calls; report the across-case median and quartiles.",
@@ -38,8 +38,7 @@
     "source_fields": ["R.peak_rss_diagnostic_bytes", "prusie.peak_rss_diagnostic_bytes"],
     "R_measurement": "VmHWM from /proc/self/status",
     "prusie_measurement": "resource.getrusage(RUSAGE_SELF).ru_maxrss converted from KiB to bytes",
-    "boundary": "Per case/backend fresh process through final fit, including interpreter, libraries, input loading, warmup and retained fits; captured before numerical comparison and serialization. No reference alpha arrays are preloaded.",
-    "process_calls": "Four calls for 14339 cases and eight calls for 24 initial-schedule cases; a process high-water mark cannot be truncated to selected repeat timings.",
+    "boundary": "Per case/backend fresh process through final fit, including interpreter, libraries, input loading, the warm-up and the three timed calls; captured before numerical comparison and serialization. No reference alpha arrays are preloaded.",
     "caveat": "Not fitting-only increments or independent single-call peaks. Linux ru_maxrss may include pre-exec image residency, unlike VmHWM; that unmeasured difference could raise the prusie peak."
   },
   "numerical_acceptance": {"max_abs_alpha_error": 0.00001, "relative_tolerance": 0, "comparison": "Final full alpha matrix in original component/variant order; PIP differences reported separately.", "inclusion": "All fixed cases retained regardless of numerical agreement, convergence or speed."},
