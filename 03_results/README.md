@@ -17,9 +17,11 @@ one numerical thread.
 
 ## Definitions
 
-Speed-up is the across-case median of the within-case susieR/prusie ratio of
-three-call medians. Dataset total software time sums case medians, counting each
-analysis once; it is not the sum of repeats or parallel campaign wall time.
+Primary speed-up is the ratio of summed per-case median times for susieR and
+prusie, using three retained calls per case and implementation. The median of
+within-case ratios and the all-call cumulative ratio are separate supplementary
+statistics. Dataset total software time sums case medians, counting each analysis
+once; it is not the sum of repeats or parallel campaign wall time.
 Complete calls accept loaded arrays through returned results, excluding external
 preparation, disk reads, imports, explicit garbage collection and serialization.
 

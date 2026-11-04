@@ -1,5 +1,5 @@
 {
-  "README.md": "05a27b552a68fc516c77f9e4b97091194e934db51c1e4942d4dfbfd6bbe7b9a6",
+  "README.md": "764b78c57a4e05ce8d328a4cc7d5b46217c27377ec0d92ba62fa2ec72236d8a7",
   "architecture.svg": "0f4d22f2b3356e0d92bdb7252adb712e0f83164c1ead2bfeadb25c95e9825c75",
   "benchmark_manuscript_protocol.json": "fc38e4b00af51972fb3e1db41163e76269de6f7ca570cb2c98af69534126feb7",
   "benchmark_primary.tsv": "96fbf7d7d59d0a67963bfefca7c9604d602811721dec0d90ec63731a33cf1093",
@@ -8,8 +8,8 @@
   "benchmark_windows.tsv": "e69b2c130de626001dc01fbd8c0af85d5db9421e0eddc5eee409c9779f2b5f81",
   "cs_membership.tsv": "d3125fa8a2f0dcdc56cc7c475198f11168b24110edb015883c71bff427168354",
   "derived_analyses.json": "997d02e930ba6ca75eaa2860b87dba2aee1832467d4eab56a456125d87d06eec",
-  "figure1_traceability.json": "12b59b1997267e6f1348ef6108e10933f767697746b1deb38ee7061299add59a",
-  "figure_sources.json": "0991729bd6dcc3ed54cf95700627e62c86dccd3f5d38e01055f71d12c02a439c",
+  "figure1_traceability.json": "145cf201f7b7fc8a0dc16316aa756cee1694322997cf0a04aef0d56eccdfe322",
+  "figure_sources.json": "b7b7e96c9c4f97cd3032bc71a84e25cd9f81aabb42c2b707863ec0c5d284c8df",
   "ld_class_census.tsv": "73a97885a6920e25ce7be4385c4a6ea544c9b283174fd537ae2a91843036b097",
   "manuscript_numbers.json": "d1512b88733f38e8cde65cc8d0dcd8b57d0fe342f6dee34391251916028fc39a",
   "nested_window_audit.json": "f98669ff099b65b227d628ee65644c4a365241016b1efecb1ad4ac3338feac87",

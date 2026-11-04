@@ -1,9 +1,12 @@
 {
   "figure1.pdf": {
-    "sha256": "1c9405ba8fe8cd58d25bea4460943dbb7b53795c1b1aec9b5c2488af52e551d0",
+    "sha256": "c51e03c6542e7ecc3fe40dff7f024c2f00a07bba69f24e4e04b40e6369f2a8f8",
     "source": "benchmark_records.jsonl.gz and figure1_traceability.json",
-    "generator": "scripts/make_figure1.py",
-    "hardware": "exclusive AMD EPYC 7742 compute nodes"
+    "generator": "04_figures_tables/make_figure1.py",
+    "hardware": "exclusive AMD EPYC 7742 compute nodes",
+    "historical_sha256": "1c9405ba8fe8cd58d25bea4460943dbb7b53795c1b1aec9b5c2488af52e551d0",
+    "historical_traceability_sha256": "12b59b1997267e6f1348ef6108e10933f767697746b1deb38ee7061299add59a",
+    "runtime_annotation": "Ratio of summed per-analysis median complete-call runtimes"
   },
   "supp_agreement.pdf": {
     "sha256": "269e65d24b44c69726a229cc8718c8850e047ad3c67b5cf27654b7d9163c8735",

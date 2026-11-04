@@ -1,7 +1,7 @@
 """Main-text Figure 1: per-case runtime (top) and backend peak memory (bottom).
 
 Columns are the GWAS and eQTL panels. Every case is drawn; lines are medians
-within log-spaced variant-count bins. Reads only data/benchmark_records.jsonl.gz.
+within log-spaced variant-count bins. Reads only 03_results/benchmark_records.jsonl.gz.
 """
 
 from __future__ import annotations
@@ -55,7 +55,6 @@ def load_cases(records):
         cases[panel] = {
             "p": np.array([r["p"] for r in rows], dtype=float),
             "time": {b: np.array([np.median(r[k]["times"]) for r in rows]) for b, k in BACKENDS},
-            "time_sum": {b: float(sum(sum(r[k]["times"]) for r in rows)) for b, k in BACKENDS},
             "memory": {
                 b: np.array([r[k]["peak_rss_diagnostic_bytes"] for r in rows]) / GIB
                 for b, k in BACKENDS
@@ -101,7 +100,7 @@ def main():
         large = p >= spec["large_p"]
         stats = {
             "cases": int(p.size),
-            "cumulative_time_ratio": c["time_sum"]["susieR"] / c["time_sum"]["prusie"],
+            "case_median_total_ratio": float(c["time"]["susieR"].sum() / c["time"]["prusie"].sum()),
             "median_paired_memory_ratio": float(np.median(m_r / m_p)),
             "large_p": spec["large_p"],
             "large_p_cases": int(large.sum()),
@@ -111,7 +110,7 @@ def main():
             },
         }
         summary[panel] = stats
-        note(top, f"Cumulative susieR/prusie runtime {stats['cumulative_time_ratio']:.1f}×")
+        note(top, f"Summed median runtime ratio {stats['case_median_total_ratio']:.1f}×")
         over = stats["large_p_median_peak_over_ld"]
         note(bottom, f"Median peak / LD ($p$ ≥ {spec['large_p']:,}): {over['prusie']:.2f} (prusie), "
                      f"{over['susieR']:.2f} (susieR)")
@@ -157,7 +156,7 @@ def main():
         "source_sha256": hashlib.sha256(RECORDS.read_bytes()).hexdigest(),
         "points": "One per primary case: median of three retained complete calls; backend-process peak RSS",
         "lines": "Median within log-spaced p bins with at least the stated case count",
-        "runtime_annotation": "Sum of all retained susieR complete-call times / sum of all retained prusie times",
+        "runtime_annotation": "Sum of per-analysis susieR median complete-call times / sum of per-analysis prusie medians; three retained calls per analysis and implementation",
         "memory_annotation": "Median over cases with p >= large_p of backend-process peak RSS / 8p^2 bytes",
         "bins": {k: {"bins": v["bins"], "min_count": v["min_bin"]} for k, v in PANELS.items()},
         "summary": summary,

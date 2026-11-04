@@ -16,8 +16,8 @@ backend runs one warmup and three retained calls per case.
 
 | | GWAS | eQTL |
 | --- | ---: | ---: |
-| Summed susieR time / summed prusie time, all retained calls | 49.20× | 26.58× |
-| Same ratio using each case's median call | 42.86× | 26.60× |
+| Primary speed-up: summed susieR case medians / summed prusie case medians | 42.86× | 26.60× |
+| All-call cumulative speed-up: summed susieR time / summed prusie time | 49.20× | 26.58× |
 | Median of per-case ratios | 47.74× | 27.53× |
 | Median of per-case max \|Δα\| | 8.7 × 10⁻¹⁰ | 7.3 × 10⁻¹⁰ |
 
