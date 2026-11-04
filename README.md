@@ -50,11 +50,13 @@ You need Python 3.12. The architecture figure also needs Cairo and librsvg
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r environment/requirements-level-a.txt
-make check     # recompute summaries; values must equal those in 03_results/
+make check     # recompute summaries and compare with 03_results/
 make all       # also write tables to build/tables/ and redraw the figures
 ```
 
-`make check` also verifies the checksums of the records and archived scripts.
+`make check` requires non-numeric values to match exactly and floating-point
+values to agree to a relative 10⁻¹², since BLAS kernels differ between CPUs. It
+also verifies the checksums of the records and archived scripts.
 CI runs the same command. Redrawn figures can differ from the manuscript PDFs in
 fonts and pixels, but not in content.
 
