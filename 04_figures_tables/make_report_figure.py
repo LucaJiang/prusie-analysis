@@ -57,7 +57,7 @@ def schematic(ax):
     ax.set_axis_off()
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
-    heights = [0.046 + 0.0215 * (body.count("\n") + 1) for _, body in SECTIONS]
+    heights = [0.056 + 0.025 * (body.count("\n") + 1) for _, body in SECTIONS]
     gap = 0.025
     pad = (0.995 - sum(heights) - gap * (len(SECTIONS) - 1)) / len(SECTIONS)
     heights = [h + pad for h in heights]
@@ -70,12 +70,12 @@ def schematic(ax):
             facecolor="#eef4f9" if linked else "#f5f5f3",
             edgecolor=PRUSIE if linked else "#c9c8c3", lw=0.8 if linked else 0.6,
         ))
-        ax.text(0.05, y - 0.012, f"{i + 1}  {title}", fontsize=7, fontweight="bold",
+        ax.text(0.05, y - 0.013, f"{i + 1}  {title}", fontsize=8, fontweight="bold",
                 color=INK, va="top")
-        ax.text(0.05, y - 0.04, body, fontsize=6, color=INK2, va="top", linespacing=1.3)
+        ax.text(0.05, y - 0.047, body, fontsize=7, color=INK2, va="top", linespacing=1.3)
         if linked:
             anchors[i] = (0.99, y - h / 2)
-            ax.text(0.955, y - 0.012, LINKS[i], fontsize=7, fontweight="bold", color=PRUSIE,
+            ax.text(0.955, y - 0.013, LINKS[i], fontsize=8, fontweight="bold", color=PRUSIE,
                     va="top", ha="right")
         y -= h + gap
     return anchors
