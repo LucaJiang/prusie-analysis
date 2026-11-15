@@ -1,8 +1,8 @@
 """Derived analyses: per-sweep window times, memory by region size, per-sweep
 scaling exponents, the exact-column-class (G/p) comparison and thread scaling.
 
-Reads data/benchmark_primary.tsv, data/benchmark_windows.tsv,
-data/ld_class_census.tsv and data/thread_scaling.tsv; writes data/derived_analyses.json.
+Reads benchmark_primary.tsv, benchmark_windows.tsv, ld_class_census.tsv and
+thread_scaling.tsv in 03_results/; writes derived_analyses.json there by default.
 """
 import os
 import csv
@@ -83,24 +83,35 @@ def sweep_exponents(primary):
 def column_classes(primary):
     by_key = {r["case_key"]: r for r in primary}
     census = read("ld_class_census.tsv")
+    assert len(by_key) == len(primary), "Duplicate primary case keys"
+    assert len({c["case_key"] for c in census}) == len(census), "Duplicate census case keys"
+    assert {c["case_key"] for c in census} == set(by_key), "Census must cover every primary case"
     out = {}
     for panel in ("GWAS", "eQTL"):
-        rows = [c for c in census if c["panel"] == panel]
+        rows = sorted([c for c in census if c["panel"] == panel], key=lambda c: c["case_key"])
         for c in rows:
-            assert int(c["p"]) == int(by_key[c["case_key"]]["p"])
+            primary_case = by_key[c["case_key"]]
+            assert c["case_id"] == primary_case["case_id"] and panel == primary_case["panel"]
+            assert int(c["p"]) == int(primary_case["p"])
+            assert 1 <= int(c["G"]) <= int(c["p"])
+            assert 1 <= int(c["largest_class"]) <= int(c["p"])
+            assert 0 <= int(c["variants_in_shared_classes"]) <= int(c["p"])
         g = np.array([int(c["G"]) / int(c["p"]) for c in rows])
         p = np.array([int(c["p"]) for c in rows])
         ratio = np.array([float(by_key[c["case_key"]]["fitting_speedup"]) for c in rows])
         m = (g >= 0.35) & (g < 0.45) & (p >= 2000) & (p <= 6000)
         out[panel] = {"cases": len(rows), "median_G_over_p": float(np.median(g)),
+                      "G_over_p_q1_q3": [float(q) for q in np.quantile(g, [0.25, 0.75])],
                       "spearman_p_G_over_p": float(spearmanr(p, g).statistic),
                       "matched_bin_cases": int(m.sum()),
-                      "matched_bin_median_fitting_ratio": float(np.median(ratio[m]))}
+                      "matched_bin_median_fitting_ratio": float(np.median(ratio[m])),
+                      "matched_bin_fitting_ratio_q1_q3": [float(q) for q in np.quantile(ratio[m], [0.25, 0.75])]}
         if panel == "eQTL":
             order = np.argsort(g, kind="stable")
             out[panel]["tertiles"] = [
                 {"cases": len(t), "G_over_p_min": float(g[t].min()), "G_over_p_max": float(g[t].max()),
-                 "median_fitting_ratio": float(np.median(ratio[t]))}
+                 "median_fitting_ratio": float(np.median(ratio[t])),
+                 "fitting_ratio_q1_q3": [float(q) for q in np.quantile(ratio[t], [0.25, 0.75])]}
                 for t in np.array_split(order, 3)]
             high = g >= 0.7
             out[panel]["G_over_p_at_least_0.7"] = {

@@ -13,5 +13,7 @@ env=dict(os.environ,ANALYSIS_OUTPUT=str(OUT))
 subprocess.run([sys.executable,str(Path(__file__).with_name('summarize_benchmark.py'))],env=env,check=True)
 env['ANALYSIS_INPUT']=str(OUT)
 subprocess.run([sys.executable,str(Path(__file__).with_name('derived_analyses.py'))],env=env,check=True)
-subprocess.run([sys.executable,str(Path(__file__).with_name('manuscript_numbers.py')),'--output',str(OUT/'manuscript_numbers.json')],check=True)
+subprocess.run([sys.executable,str(Path(__file__).with_name('manuscript_numbers.py')),
+                '--derived-analyses',str(OUT/'derived_analyses.json'),
+                '--output',str(OUT/'manuscript_numbers.json')],check=True)
 print('Numerical tables:',OUT)

@@ -54,6 +54,32 @@ def compare(got, want, where):
 
 
 def main():
+    census = values(DATA / 'ld_class_census.tsv')
+    primary = {r['case_key']: r for r in values(DATA / 'benchmark_primary.tsv')}
+    manifest_rows = values(DATA / 'primary_case_manifest.tsv')
+    manifest = {r['case_id']: r for r in manifest_rows}
+    assert len(manifest) == len(manifest_rows) == len(primary) == len(census)
+    assert {r['case_id'] for r in census} == set(manifest)
+    for row in census:
+        frozen = manifest[row['case_id']]
+        assert row['panel'] == frozen['panel']
+        assert int(row['p']) == int(frozen['variants'])
+    provenance = values(DATA / 'ld_class_census_provenance.json')
+    for panel in ('GWAS', 'eQTL'):
+        assert sum(r['panel'] == panel for r in census) == provenance['counts'][panel]
+    nonconverged = sum(r['panel'] == 'eQTL' and
+                      (r['prusie_converged'] != 'True' or r['susieR_converged'] != 'True')
+                      for r in primary.values())
+    assert nonconverged == provenance['counts']['retained_nonconverged_eQTL']
+    matches = sum(r['panel'] == 'eQTL' and r['R_sha256'] ==
+                  primary[f"eQTL_{int(r['source_index']):05d}"]['ld_sha256']
+                  for r in manifest_rows)
+    assert matches == provenance['local_vs_Burgundy_raw_LD_hashes']['equal']
+    for name, key in (('ld_class_census.tsv', 'census_sha256'),
+                      ('benchmark_primary.tsv', 'primary_table_sha256'),
+                      ('primary_case_manifest.tsv', 'primary_manifest_sha256')):
+        assert hashlib.sha256((DATA / name).read_bytes()).hexdigest() == provenance[key], name
+    print('Full LD census coverage, identities, SNP counts and provenance matched')
     build = ROOT / 'build'
     build.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(dir=build) as tmp:
@@ -67,7 +93,9 @@ def main():
         for name in OUTPUTS:
             compare(values(target / name), values(DATA / name), name)
             print('Matched:', name)
-        subprocess.run([sys.executable, str(Path(__file__).with_name('manuscript_numbers.py')), '--output', str(target/'manuscript_numbers.json')], check=True)
+        subprocess.run([sys.executable, str(Path(__file__).with_name('manuscript_numbers.py')),
+                        '--derived-analyses', str(target/'derived_analyses.json'),
+                        '--output', str(target/'manuscript_numbers.json')], check=True)
         expected = DATA / 'manuscript_numbers.json'
         if expected.exists():
             compare(values(target / 'manuscript_numbers.json'), values(expected), 'manuscript_numbers.json')

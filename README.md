@@ -41,6 +41,19 @@ with LD from 525 EUR individuals. The results here are valid comparisons of
 runtime and numerical agreement on identical inputs. They are not biological
 fine-mapping conclusions.
 
+The exact LD column-class census covers all 200 GWAS loci and all 14,157 primary
+eQTL genes, including the 224 nonconverged eQTL cases. For eQTL, median G/p is
+0.5934 (IQR 0.5264–0.6586); 918 genes meet the fixed comparison stratum
+0.35 ≤ G/p < 0.45 and 2,000 ≤ p ≤ 6,000. G counts float64 columns exactly equal
+up to sign, with no tolerance; it is not matrix rank.
+
+These classes describe **locally prepared LD**. Raw LD hashes match the
+independently reconstructed Burgundy timing matrices in 0/14,157 eQTL cases.
+Historical runtime associations therefore do not establish identical equality
+classes in the timed matrices. The full census adds no fitting or timing runs.
+See [census provenance](03_results/ld_class_census_provenance.json) and
+[reproduction instructions](supplementary/README.md).
+
 ## Redraw figures and tables
 
 You need Python 3.12. The architecture figure also needs Cairo and librsvg
@@ -57,6 +70,8 @@ make all       # also write tables to build/tables/ and redraw the figures
 `make check` requires non-numeric values to match exactly and floating-point
 values to agree to a relative 10⁻¹², since BLAS kernels differ between CPUs. It
 also verifies the checksums of the records and archived scripts.
+It checks full census coverage, case identities and variant counts against the
+primary table and case manifest, including nonconverged cases.
 CI runs the same command. Redrawn figures can differ from the manuscript PDFs in
 fonts and pixels, but not in content.
 

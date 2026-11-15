@@ -18,15 +18,11 @@ TABLE = Path(CFG['primary_table'])
 GWAS_DIR = Path(CFG['gwas_cases'])
 EQTL_DIR = Path(CFG['eqtl_cases'])
 
-EQTL_STRIDE = 20
-
 
 def cases(panel):
     rows = [r for r in csv.DictReader(TABLE.open(), delimiter="\t")
             if r["kind"] == "primary" and r["panel"] == panel]
     rows.sort(key=lambda r: r["case_key"])
-    if panel == "eQTL":
-        rows = rows[::EQTL_STRIDE]
     base = GWAS_DIR if panel == "GWAS" else EQTL_DIR
     return [(r["case_key"], r["case_id"], int(r["p"]), base / r["case_id"]) for r in rows]
 

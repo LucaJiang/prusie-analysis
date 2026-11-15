@@ -21,11 +21,12 @@ def stats(x):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--derived-analyses',type=Path,default=DATA/'derived_analyses.json')
     args=parser.parse_args()
     with gzip.open(DATA/'benchmark_records.jsonl.gz','rt') as f:
         records=[json.loads(line) for line in f if line.strip()]
     summary=json.loads((DATA/'benchmark_summary.json').read_text())
-    result={'definitions':{'case_ratio':'median R calls / median prusie calls', 'case_median_total_ratio':'sum of R case medians / sum of prusie case medians', 'retained_total_ratio':'sum of all retained R calls / sum of all retained prusie calls'},'panels':{},'summary_tables':summary,'derived_tables':json.loads((DATA/'derived_analyses.json').read_text()),'nested_windows':tsv('benchmark_windows.tsv')}
+    result={'definitions':{'case_ratio':'median R calls / median prusie calls', 'case_median_total_ratio':'sum of R case medians / sum of prusie case medians', 'retained_total_ratio':'sum of all retained R calls / sum of all retained prusie calls'},'panels':{},'summary_tables':summary,'derived_tables':json.loads(args.derived_analyses.read_text()),'nested_windows':tsv('benchmark_windows.tsv')}
     for panel in ('GWAS','eQTL'):
         rows=[r for r in records if r['panel']==panel]
         members=[r for r in tsv('cs_membership.tsv') if r['panel']==panel]
