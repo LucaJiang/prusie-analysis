@@ -110,7 +110,7 @@ def main():
             },
         }
         summary[panel] = stats
-        note(top, f"Summed median runtime ratio {stats['case_median_total_ratio']:.1f}×")
+        note(top, f"Aggregated runtime speedup {stats['case_median_total_ratio']:.1f}×")
         over = stats["large_p_median_peak_over_ld"]
         note(bottom, f"Median peak / LD ($p$ ≥ {spec['large_p']:,}): {over['prusie']:.2f} (prusie), "
                      f"{over['susieR']:.2f} (susieR)")

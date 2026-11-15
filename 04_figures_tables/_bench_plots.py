@@ -150,10 +150,8 @@ def fitting_by_variants_figure(records, output, filename="supp_fitting"):
                 density_scatter(ax, p, y, COLORS[backend])
         for backend, y in values.items():
             median_line(ax, *binned_median(p[order], y[order], *BINS[panel]), backend)
-        ratio = sum(sum(r["R"]["fitting_times"]) for r in rows) / sum(
-            sum(r["prusie"]["fitting_times"]) for r in rows
-        )
-        note(ax, f"Cumulative susieR/prusie fitting time {ratio:.1f}×")
+        ratio = values["susieR"].sum() / values["prusie"].sum()
+        note(ax, f"Aggregated runtime speedup {ratio:.1f}×")
         ax.set_xscale("log")
         ax.set_yscale("log")
         grid(ax)
