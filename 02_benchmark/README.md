@@ -51,10 +51,7 @@ checks the installed function bodies against the pinned source excerpts.
 The patch build and fitting-stage instrumentation are not re-executed here.
 
 [protocol.json](protocol.json) records the portable measurement definitions.
-For the evaluated cases, the headline speed-up is the sum of all retained R
-times divided by the corresponding prusie total. Ratios of case medians and
-geometric mean ratios are separate summaries. The manuscript includes all
-fixed cases, including iteration-limit fits and alpha discrepancies.
+For the evaluated cases, the primary manuscript speed-up is the sum of per-case median susieR complete-call times divided by the sum of the corresponding prusie medians. The all-call cumulative ratio, median of per-case ratios and geometric mean ratio are separate summaries. The older `timing.headline` field in the portable protocol describes the all-call cumulative ratio and is preserved as historical metadata; see [ARCHIVING.md](../ARCHIVING.md). The manuscript includes all fixed cases, including iteration-limit fits and alpha discrepancies.
 
 [archive/](archive/README.txt) preserves the execution archive for the reported
 measurements. Pre-campaign qualification and smoke records, which the manuscript
