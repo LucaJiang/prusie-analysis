@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use these benchmark scripts or archived measurement records, please cite this benchmark archive."
+type: software
+title: "prusie: Benchmark and reproducibility code for SuSiE fine-mapping performance evaluation"
+version: 1.0.0
+license: GPL-3.0-or-later
+authors:
+  - given-names: Wenxin
+    family-names: Jiang
+    affiliation: "Department of Biostatistics, City University of Hong Kong, Hong Kong SAR, China; Shenzhen Research Institute, City University of Hong Kong, Shenzhen, 518057, China"
+  - given-names: Jian
+    family-names: Yin
+    affiliation: "Department of Biostatistics, City University of Hong Kong, Hong Kong SAR, China"
+  - given-names: Yi
+    family-names: Yang
+    affiliation: "Department of Biostatistics, City University of Hong Kong, Hong Kong SAR, China"
+  - given-names: Mingxuan
+    family-names: Cai
+    affiliation: "Department of Biostatistics, City University of Hong Kong, Hong Kong SAR, China; Shenzhen Research Institute, City University of Hong Kong, Shenzhen, 518057, China"
+abstract: "This archive contains the benchmark scripts, measurement records, analysis code, and reproducibility materials accompanying the manuscript 'prusie: fast and memory-efficient SuSiE fine-mapping in Python and Rust'. The benchmarks compare prusie 0.3.0 with susieR 0.16.6 across 200 FinnGen R13 type 2 diabetes GWAS loci and 14,157 GTEx v11 Whole Blood eGenes, together with supplementary analyses. The repository includes scripts for input preparation, benchmark execution, numerical agreement assessment, runtime and memory analysis, and figure and table generation. Archived measurement records allow the manuscript figures and tables to be reproduced without rerunning the benchmarks. Original association statistics, genotypes, and LD matrices are not redistributed; instructions for obtaining the source data are provided."
+repository-code: "https://github.com/LucaJiang/prusie-analysis"
+url: "https://github.com/LucaJiang/prusie-analysis"
+keywords:
+  - prusie
+  - SuSiE
+  - fine-mapping
+  - statistical genetics
+  - benchmarking
+  - reproducibility
+  - Python
+  - Rust
+  - GWAS
+  - eQTL
