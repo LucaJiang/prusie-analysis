@@ -1,5 +1,7 @@
 # prusie manuscript analyses
 
+Citation metadata is in [CITATION.cff](CITATION.cff). The manuscript benchmark archive is version 1.0.0 (tag `analysis-v1.0.0`), separate from the benchmarked prusie 0.3.0 package. See [ARCHIVING.md](ARCHIVING.md) for archive scope, frozen-history notes and citation guidance.
+
 This repository holds the code and measurement records behind the prusie
 manuscript. The manuscript compares [prusie](https://github.com/LucaJiang/prusie)
 0.3.0 with susieR 0.16.6 on 200 FinnGen R13 type 2 diabetes loci, 14,157 GTEx v11
