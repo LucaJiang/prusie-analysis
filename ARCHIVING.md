@@ -1,8 +1,10 @@
 # Manuscript benchmark archive
 
-Benchmark archive version **1.0.0** (Git tag `analysis-v1.0.0`) captures the
+Benchmark archive version **1.0.1** (Git tag `analysis-v1.0.1`) captures the
 analysis scripts and measurement records accompanying the manuscript evaluation
 of **prusie 0.3.0** and **susieR 0.16.6**.
+
+Version 1.0.1 updates the reproduction documentation, protocol descriptions, and result metadata. It carries forward the measurement records and numerical benchmark results from version 1.0.0.
 
 ## Reproduction workflows
 
@@ -64,4 +66,4 @@ Citation File Format (CFF 1.2.0) for GitHub and Zenodo indexing. Archived
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 For manuscript reproducibility, cite the version-specific Zenodo archive
-corresponding to release tag `analysis-v1.0.0`.
+corresponding to release tag `analysis-v1.0.1`.

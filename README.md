@@ -2,7 +2,7 @@
 
 Citation metadata is provided in [CITATION.cff](CITATION.cff). See
 [ARCHIVING.md](ARCHIVING.md) for archive structure, reproduction workflows, and
-citation details (`analysis-v1.0.0`).
+citation details (`analysis-v1.0.1`).
 
 This repository contains the benchmark workflows, measurement records, and
 figure- and table-generation code accompanying the manuscript comparing

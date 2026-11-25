@@ -2,7 +2,8 @@ cff-version: 1.2.0
 message: "If you use these benchmark scripts or archived measurement records, please cite this benchmark archive."
 type: software
 title: "prusie: Benchmark and reproducibility code for SuSiE fine-mapping performance evaluation"
-version: 1.0.0
+version: 1.0.1
+date-released: 2026-11-25
 license: GPL-3.0-or-later
 authors:
   - given-names: Wenxin
