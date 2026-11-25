@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bind prepared cases to the fixed manuscript order before running any fits."""
+"""Build the benchmark case manifest in the published panel order."""
 from __future__ import annotations
 import argparse
 import csv

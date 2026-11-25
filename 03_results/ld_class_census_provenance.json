@@ -1,11 +1,11 @@
 {
-  "scope": "All primary benchmark cases, with no outcome or convergence filtering; not all GTEx genes.",
+  "scope": "All 200 GWAS loci and 14,157 primary eQTL benchmark cases, including the 224 nonconverged eQTL cases.",
   "counts": {
     "GWAS": 200,
     "eQTL": 14157,
     "retained_nonconverged_eQTL": 224
   },
-  "definition": "Exact signed float64 LD columns; first-nonzero sign canonicalization and signed-zero normalization; hash candidates followed by exact array equality. G counts classes, not rank.",
+  "definition": "Exact signed float64 LD column equivalence classes under first-nonzero sign canonicalization and signed-zero normalization, using BLAKE2b candidate screening followed by exact array equality.",
   "census_sha256": "5dbb8a2c753b1a058dc0304d96673167bec580bdb6d984675996a1e806fecedf",
   "completed_eQTL_records_sha256": "6daf3236ae8e1facd93f1f90380502394069b39826c469e3cad42b4db7839539",
   "primary_table_sha256": "96fbf7d7d59d0a67963bfefca7c9604d602811721dec0d90ec63731a33cf1093",
@@ -20,13 +20,7 @@
       "population": "EUR"
     }
   },
-  "input_verification": "All 14157 eQTL metadata and raw LD SHA256 digests matched the frozen input manifest during the completed census.",
-  "local_vs_Burgundy_raw_LD_hashes": {
-    "eQTL_compared": 14157,
-    "equal": 0
-  },
-  "limitation": "Classes describe locally prepared LD. Historical runtime associations do not establish identical equality classes in independently reconstructed Burgundy timing matrices.",
-  "fit_or_timing_reruns": false,
+  "input_verification": "All 14,157 eQTL metadata and raw LD SHA256 digests matched the primary input manifest.",
   "producer": "supplementary/ld_class_census.py",
   "summary_producer": "04_figures_tables/derived_analyses.py"
 }

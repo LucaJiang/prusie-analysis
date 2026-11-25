@@ -11,7 +11,7 @@
     "backend_order": "Shuffle case keys separately within each panel with random.Random(20261028); alternate R-first and prusie-first after shuffling.",
     "fresh_process": "One process per case/backend; backends run sequentially within each case.",
     "complete_call": "Complete public susie_rss call; input reads, gc and export are outside the clock.",
-    "fitting": "Optional directly timed same-call spans using the archived native patch and R helper; no subtraction of separately measured costs.",
+    "fitting": "Directly timed same-call fitting spans using the archived native patch and R timer helper.",
     "headline": "Sum of all retained R times divided by the corresponding prusie total for the evaluated cases."
   },
   "panel": {
@@ -30,12 +30,12 @@
     "max_iter": 100,
     "numerical_threads": 1,
     "overwrite_ld": false,
-    "parameters": "Read exactly from each frozen case JSON; no filtering or parameter changes."
+    "parameters": "Read from each case JSON."
   },
   "historical_repeat_policy": "24 completed cases retained warmup and first three times from an earlier seven-retained-call protocol; saved alpha arrays are from repeat seven. All other complete cases use one warmup plus three retained calls.",
   "alpha_comparison": {
-    "component_order": "Original rows; no permutation or filtering",
+    "component_order": "Original component row order",
     "reported_metric": "Maximum absolute difference over the complete final alpha matrix."
   },
-  "timing_instrumentation": "The manuscript measured an instrumented derivative of the frozen wheel. The default portable mode uses the original wheel and records complete-call time only; instrumented mode requires rebuilding from the exact archived patch."
+  "timing_instrumentation": "The manuscript measured an instrumented build of prusie 0.3.0. Default portable mode uses the standard release wheel and records complete-call time; instrumented mode uses a build created with the archived native timing patch."
 }

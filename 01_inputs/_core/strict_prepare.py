@@ -29,13 +29,7 @@ def dense_ld(f, path, block=256):
     return needed
 
 def validate_matrix(path, f, block=193):
-    """Independent saved-file residual against a newly decoded genotype factor.
-
-    An exact real Gram matrix is PSD. The saved matrix's residual plus the
-    standard dot-product roundoff bound yields a conservative spectral bound
-    p*(max_residual + gamma_n*max_column_norm_squared). No eigendecomposition,
-    positive-definite repair, or rejection of legal low rank is performed.
-    """
+    """Validate the saved LD matrix against a freshly decoded genotype factor and compute the spectral lower bound."""
     n,p=f.shape
     if path.stat().st_size!=8*p*p:raise ValueError("LD size mismatch")
     diagonal=symmetry=maximum=residual=0.
@@ -59,10 +53,10 @@ def validate_matrix(path, f, block=193):
         raise ValueError(f"Saved Gram validation failed: {diagonal}, {symmetry}, {maximum}, {residual}")
     return dict(diagonal_max_abs_error=diagonal,symmetry_max_abs_error=symmetry,max_abs_r=maximum,
                 saved_Gram_residual_max_abs=residual,bitwise_symmetric=symmetry==0,
-                psd_method="redecoded genotype Gram certificate, exhaustive saved-matrix residual; no full eigendecomposition",
+                psd_method="redecoded genotype Gram certificate and saved-matrix residual",
                 psd_eigenvalue_lower_bound=-p*(residual+gamma*norm2),dot_product_gamma_n=gamma,
-                psd_bound_target="symmetric part of saved R; symmetry separately checked, diagnostic only with no changed bytes",
-                bound_limitation="conservative float64 forward-error bound; legitimate rank <= N_ref-1 is retained",
+                psd_bound_target="symmetric part of saved R",
+                bound_limitation="conservative float64 forward-error bound",
                 all_entries_reopened=True,n_variants=p,n_reference=n)
 
 def duplicates(entries):

@@ -1,4 +1,4 @@
-"""Numerical tables and descriptive claims from the published records alone."""
+"""Compute full-precision manuscript summary statistics from 03_results/."""
 import argparse
 import csv
 import gzip

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select all autosomal FinnGen R13 T2D loci before examining fit outcomes."""
+"""Select autosomal FinnGen R13 T2D loci."""
 from pathlib import Path
 import argparse,sys
 import pysam

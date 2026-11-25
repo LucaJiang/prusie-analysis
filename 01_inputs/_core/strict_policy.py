@@ -3,7 +3,7 @@ from .strict_common import classify as legacy_classify
 
 POLICY = "strict_snp_maf05_current_record_v2"
 
-ALLELE_SCOPE = "current input record; historical unsplit-site ancestry is not a QC dependency"
+ALLELE_SCOPE = "current input record"
 
 STUDY_STAGES = ["invalid_coordinate", "current_record_multiallelic", "invalid_alleles",
                 "indel", "MNV", "palindrome", "invalid_statistics", "study_MAF_lt_0.05",

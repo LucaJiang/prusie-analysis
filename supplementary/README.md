@@ -1,43 +1,38 @@
 # Supplementary analyses
 
-The offline summaries are part of Level A:
+The offline summary scripts run as part of the Level A workflow using the
+tables in `03_results/`:
 
 ```sh
 python 04_figures_tables/derived_analyses.py
 python 04_figures_tables/manuscript_numbers.py --output build/manuscript_numbers.json
 ```
 
-The first command writes `03_results/derived_analyses.json`; `make check` uses a
-temporary output directory to protect the frozen copy. The inputs are the published
-per-case tables, LD-column census and thread-scaling table. No fit is run.
+`derived_analyses.py` writes `03_results/derived_analyses.json` by default
+(or to `ANALYSIS_OUTPUT` when set, as in `make check` and `make tables`).
 
-The following producers require local source inputs or saved fits. Set
-`ANALYSIS_CONFIG=config/local.yaml`; their paths are in the configuration's
-`supplementary` section.
+## Producers requiring local case inputs or saved fits
 
-| Script | Calculation | Local execution |
-| --- | --- | --- |
-| `ld_class_census.py PANEL SHARD NSHARDS OUT.jsonl` | Exact signed column classes for every primary case in `GWAS` or `eQTL`; no convergence filtering | Complete 200-GWAS and 14,157-eQTL census supplied; first two cases of each panel checked with this producer |
-| `export_ld_census.py` | Merge complete JSONL shards into the public seven-column TSV, checking coverage and identities | Full-table export reproduced from completed census records |
-| `cs_membership.py 0 1 cs.jsonl` | Credible sets from both saved final alpha arrays and local LD, component IDs preserved | First two cases of each panel recalculated; counts and membership matched |
-| `summarize_cs.py` | Merge complete CS shards | Not re-executed |
-| `export_threads.py` | Export applicable C4 thread measurements to TSV | Full 546-row TSV regenerated exactly |
-| `primary_case_manifest.py` | Extract metadata and input hashes from the frozen full case manifest | Full 14,357-row manifest regenerated exactly |
+The scripts in `supplementary/` regenerate the supplementary tables in
+`03_results/` from local case directories and saved benchmark outputs. Set
+`ANALYSIS_CONFIG=config/local.yaml` with the `supplementary` paths configured.
 
-The LD census compares exact float64 rows up to sign; it counts column classes,
-not matrix rank. It canonicalizes the first nonzero sign and normalizes signed
-zeros. Hashes screen candidates; final grouping requires exact array equality.
-No approximate grouping or numerical tolerance is used. All 224 nonconverged
-eQTL cases remain in the full primary panel.
+| Script | Description |
+| --- | --- |
+| `ld_class_census.py PANEL SHARD NSHARDS OUT.jsonl` | Count exact signed float64 LD column equivalence classes ($G$) for each primary case in `GWAS` or `eQTL` |
+| `export_ld_census.py` | Merge census JSONL shards into the seven-column `ld_class_census.tsv` table and verify panel coverage |
+| `cs_membership.py SHARD NSHARDS OUT.jsonl` | Derive credible sets from saved final `alpha` arrays and local LD matrices using the `susieR` 0.16.6 rule |
+| `summarize_cs.py` | Merge credible-set JSONL shards into `cs_membership.tsv` and `summary.json` |
+| `export_threads.py` | Export multithreaded `prusie` 0.3.0 timing records to `thread_scaling.tsv` |
+| `primary_case_manifest.py` | Extract case coordinates, sample sizes, and input SHA256 digests into `primary_case_manifest.tsv` |
 
-The census uses locally prepared LD (99 FIN individuals for GWAS, 525 EUR for
-eQTL). Local raw LD hashes match Burgundy timing LD hashes in 0/14,157 eQTL
-cases. Exact classes in these local matrices therefore need not be the classes
-in independently reconstructed timing matrices. Runtime associations use the
-existing fitting-stage records and are descriptive; no new fits or timings
-were run. See [provenance](../03_results/ld_class_census_provenance.json).
+### LD column-class census
 
-To recount from your configured prepared LD and export a full table:
+`ld_class_census.py` groups columns of the float64 LD matrix that are identical
+up to sign by canonicalizing the sign of the first nonzero entry, normalizing
+signed zeros, screening with a 16-byte BLAKE2b hash, and verifying exact array
+equality. To recompute the census across all primary cases and export the TSV
+table:
 
 ```sh
 python supplementary/ld_class_census.py GWAS 0 1 build/gwas_census.jsonl
@@ -47,25 +42,27 @@ python supplementary/export_ld_census.py \
   --output build/ld_class_census.tsv build/gwas_census.jsonl build/eqtl_census.jsonl
 ```
 
-For sharded execution use shard indices 0 through NSHARDS−1 and a distinct output
-file per shard. Outputs resume by case key; use fresh files for a new recount.
-The distributed table already contains the completed census, so offline
-reproduction (`make tables`, `make check`) needs no LD matrices or recount.
-Derived comparisons retain the fixed 0.35 ≤ G/p < 0.45, 2,000 ≤ p ≤ 6,000
-stratum and stable G/p tertiles in case-key order, with no variant-count weighting.
-Equal G/p values may straddle tertile boundaries.
+For sharded execution, run shard indices `0` through `NSHARDS - 1` with distinct
+output files per shard. Because `03_results/ld_class_census.tsv` is included in
+the repository, offline table and figure generation (`make check`, `make all`)
+uses the committed table directly.
 
-CS extraction retains the original stable order, long-double
-cumulative coverage, deduplication and minimum-purity rule. The full saved alpha
-arrays and LD matrices needed for these producers are not distributed here.
+### Credible-set membership and thread scaling
 
-The [archived thread measurement scripts](../02_benchmark/archive/thread_measurement/)
-record the original fresh-process worker, paired-round calculations and schedule.
-The manuscript thread table includes 182 cases with p≥1,024, one warmup and eight
-paired rounds at 1, 2, 4 and 8 threads. Those thread measurements were not repeated.
-The portable benchmark manifest includes all six first-p nested windows; no new
-window measurements are implied by their offline regeneration.
+`cs_membership.py` applies the `susieR` 0.16.6 credible-set construction rule
+(stable decreasing sort of component probabilities, long-double cumulative
+sum to coverage $\ge 0.95$, row deduplication, and minimum absolute pairwise LD
+purity $\ge 0.5$) identically to the saved `alpha` arrays of both backends.
 
-The report figure scripts compose the published `03_results/report_snippets/`
-screenshots from the susieR convergence toy example. They redraw the figures
-without generating a new report or fitting a model.
+The archived scripts in
+[`02_benchmark/archive/thread_measurement/`](../02_benchmark/archive/thread_measurement/)
+record the worker harness and balanced round schedule for the multithreaded
+benchmark across 182 primary cases with $p \ge 1,024$ (one warmup call and eight
+paired rounds at 1, 2, 4, and 8 threads).
+
+### Analysis report figures
+
+`04_figures_tables/make_report_figure.py` and
+`04_figures_tables/make_report_figure_compact.py` compose the schematic diagram
+and the pre-rendered report screenshots in `03_results/report_snippets/` (from
+the `susieR` `FinemappingConvergence` dataset).

@@ -35,11 +35,7 @@ def merge_intervals(regions: list[dict]) -> list[dict]:
 
 def define_regions(signals: list[dict], lengths: dict, half_window: float = 1_500_000,
                    maximum_width: int = 10_000_000, shrink: float = 0.9) -> dict:
-    """Greedy strongest leads, overlap merging, recursive oversized-region shrink.
-
-    Signal records contain chrom, pos, mlogp, ref, alt. No reference coverage,
-    fine-mapping output, or association-strength subset beyond P<5e-8 is used.
-    """
+    """Define locus regions by greedy lead-variant windowing, interval merging, and recursive 10% window shrinking for merged regions above 10 Mb."""
     lengths = {str(k).removeprefix("chr"): int(v) for k, v in lengths.items()}
     ordered = sorted(signals, key=lambda r: (-r["mlogp"], int(r["chrom"]), r["pos"], r["ref"], r["alt"]))
     for s in ordered:
@@ -167,7 +163,7 @@ def census(summary: Path, lengths: dict, output: Path) -> dict:
               "HLA_overlap_regions": sum(r["hla_overlap"] for r in region_data["final"]),
               "eligible_regions": sum(not r["hla_overlap"] for r in region_data["final"]),
               "signal_coverage": region_data["signal_coverage"], "frozen_epoch": time.time(),
-              "selection_independent_of_reference_and_fits": True, "selection_policy": SELECTION_POLICY,
+              "selection_policy": SELECTION_POLICY,
               "ledger_hashes": {name: sha256(output / name) for name in
                                 ("gwas_regions_initial.tsv", "gwas_lead_windows.tsv", "gwas_region_changes.tsv", "gwas_regions.tsv", "gwas_signals.tsv")}}
     atomic_json(receipt_path, frozen)

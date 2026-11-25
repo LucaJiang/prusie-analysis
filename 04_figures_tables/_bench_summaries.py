@@ -1,12 +1,4 @@
-"""Data summaries for the 0.3.0 benchmark figures.
-
-Reads only the frozen current-release artefacts:
-    docs/assets/benchmark/burgundy_records.jsonl.gz
-    docs/assets/benchmark/burgundy_summary.json
-
-Pure functions returning plain dicts and NumPy arrays. No fitting, no
-re-measurement, no historical-campaign data.
-"""
+"""Data summary helpers for the benchmark figures."""
 
 from __future__ import annotations
 

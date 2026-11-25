@@ -1,4 +1,4 @@
-"""Summarize frozen paired calls without fitting or dropping any cases."""
+"""Compute per-case and panel-level benchmark summaries from benchmark_records.jsonl.gz."""
 import os
 import csv
 import gzip
@@ -59,10 +59,10 @@ def main():
         "timing_source_protocol_sha256": json.loads((DATA / "benchmark_manuscript_protocol.json").read_text())["timing_source_protocol_sha256"],
         "retained_calls_per_backend": 3,
         "paired_ratio": "Per case: median of three susieR calls / median of three prusie calls; panel summary: median of these ratios",
-        "total_software_seconds": "Sum of per-case median complete-call times, one representative analysis per case; not the sum of repeated calls or a measured parallel makespan",
-        "clock_boundary": "Already loaded arrays enter public susie_rss through returned result, including software validation and preparation; excludes disk reads, LD reconstruction, imports, explicit GC, comparisons and serialization",
+        "total_software_seconds": "Sum of per-case median complete-call times across the panel",
+        "clock_boundary": "Single public susie_rss call on preloaded arrays through returned result, including input validation and RSS preparation; excludes disk reads, LD reconstruction, imports, explicit GC, numerical comparison, and serialization",
         "memory_source": "Backend timing-process high-water marks in benchmark_records.jsonl.gz: R.peak_rss_diagnostic_bytes and prusie.peak_rss_diagnostic_bytes",
-        "memory_boundary": "One fresh process per case/backend; includes interpreter, libraries, loaded inputs, the warm-up and the three timed calls; captured after the final call before numerical comparison or serialization; not an isolated fitting allocation or an independent single-call memory experiment",
+        "memory_boundary": "One fresh process per case and backend covering interpreter startup, libraries, input loading, one warmup call, and three timed calls; captured after the final call before numerical comparison and serialization",
         "panels": {},
     }
     for panel, expected_count in EXPECTED.items():

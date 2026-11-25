@@ -1,8 +1,7 @@
-"""Count exact signed LD column classes for benchmark cases.
+"""Count exact signed float64 LD column equivalence classes for benchmark cases.
 
-A class groups columns that are identical up to sign in float64. This is the
-structure prusie's exact-class products can exploit; it does not depend on the
-dispatch rule. Usage: ld_class_census.py PANEL SHARD NSHARDS OUT.jsonl
+A class groups columns that are identical up to sign in float64.
+Usage: ld_class_census.py PANEL SHARD NSHARDS OUT.jsonl
 """
 import csv
 import hashlib

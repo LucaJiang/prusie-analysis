@@ -1,4 +1,4 @@
-"""Write regenerated numerical tables to build/tables without modifying inputs."""
+"""Generate summary tables in build/tables/."""
 from pathlib import Path
 import os
 import shutil

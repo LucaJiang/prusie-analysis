@@ -1,6 +1,5 @@
 # Same-call fitting-stage timer for the pinned susieR 0.16.6 reference.
-# The installed namespace is inspected, never modified. Source files in pinned/
-# retain upstream notices; source_manifest.json records their immutable origin.
+# Wraps susieR::susie_rss in a child environment to record fitting-stage timestamps.
 make_susier_fit_timer <- function(clock, source_file, evidence_dir = NULL) {
   stopifnot(is.function(clock), length(source_file) == 1L)
   source_file <- normalizePath(source_file, mustWork = TRUE)
@@ -105,8 +104,7 @@ make_susier_fit_timer <- function(clock, source_file, evidence_dir = NULL) {
   instrumented <- original
   body(instrumented) <- as.call(instrumented_statements)
   environment(instrumented) <- timer_environment
-  # The installed reference is byte-compiled. Compile the copy as well; do not
-  # use a fully interpreted public wrapper for complete-call measurements.
+  # Byte-compile the instrumented function to match the installed package.
   instrumented <- compiler::cmpfun(instrumented)
 
   reset <- function() {

@@ -11,11 +11,11 @@
     "Warmup excluded and first three retained complete/fitting calls",
     "Independent stdlib medians and linear-interpolated quartiles",
     "Seconds/bytes and MiB/GiB conversion",
-    "Raw process HWM rather than another measurement source",
+    "Process high-water mark (peak RSS)",
     "Final full-precision alpha and PIP arrays recomputed",
-    "Iteration/convergence counts and all outliers retained"
+    "Iteration/convergence counts and all calls retained"
   ],
-  "interpretation": "Nested one-locus subsets, not independent regions or constant-sweep complexity measurements",
+  "interpretation": "Nested variant prefixes of locus T2D_chr10_61277948_71054950",
   "windows": [
     {
       "case_key": "window_500",

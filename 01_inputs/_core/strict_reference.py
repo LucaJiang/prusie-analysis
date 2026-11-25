@@ -280,7 +280,6 @@ def prepare(run: Path, chrom: int):
                     population=pop,chromosome=chrom,n_reference=n,source_variants=sum(counts.values()),retained_variants=len(final),
                     first_failure_counts=dict(counts),raw_allele_representation_counts=dict(raw_details),stages=stages(counts,REFERENCE_STAGES),identity=identity,
                     allele_scope=ALLELE_SCOPE,
-                    historical_site_cardinality='not asserted; no historical ancestry lookup or auxiliary VCF dependency',
                     hwe=dict(threshold=1e-6,midp=True,k=0,keep_fewhet=False,nonfounders_included=True,
                              tested=len(geno),removed=len(geno-passed),frequency_strata=strata,
                              report_columns=list(hwe.columns),phenotype="none; all selected unrelated samples"),

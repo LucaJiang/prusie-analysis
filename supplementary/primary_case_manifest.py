@@ -1,4 +1,4 @@
-"""Extract public case metadata with verified frozen JSON hashes; no fits."""
+"""Export the public primary case manifest from the case metadata."""
 from pathlib import Path
 import csv
 import hashlib

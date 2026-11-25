@@ -10,7 +10,7 @@ from _core.acquire import sha256 as sha, atomic_json as write
 THREADS=("OMP_NUM_THREADS","OPENBLAS_NUM_THREADS","MKL_NUM_THREADS","BLIS_NUM_THREADS","NUMEXPR_NUM_THREADS","RAYON_NUM_THREADS","VECLIB_MAXIMUM_THREADS","PRUSIE_NUM_THREADS")
 PLINK_SHA256="47ce3069a1349128bdc5193aa8af33ec20dc99ece920843c80453c34eea1a062"
 def count_missing(path, n_samples, n_variants):
-    """Inspect BED missing codes only; no genotype correlation is calculated here."""
+    """Count missing genotype codes in a SNP-major PLINK BED file."""
     width = (n_samples + 3) // 4
     counts = np.array([sum(((byte >> shift) & 3) == 1 for shift in (0, 2, 4, 6)) for byte in range(256)], dtype=np.uint8)
     tail = n_samples % 4

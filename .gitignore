@@ -7,3 +7,4 @@ config/local.yaml
 04_figures_tables/figures/
 private-inputs/
 private-output/
+.DS_Store

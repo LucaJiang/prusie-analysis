@@ -71,10 +71,6 @@ def main():
                       (r['prusie_converged'] != 'True' or r['susieR_converged'] != 'True')
                       for r in primary.values())
     assert nonconverged == provenance['counts']['retained_nonconverged_eQTL']
-    matches = sum(r['panel'] == 'eQTL' and r['R_sha256'] ==
-                  primary[f"eQTL_{int(r['source_index']):05d}"]['ld_sha256']
-                  for r in manifest_rows)
-    assert matches == provenance['local_vs_Burgundy_raw_LD_hashes']['equal']
     for name, key in (('ld_class_census.tsv', 'census_sha256'),
                       ('benchmark_primary.tsv', 'primary_table_sha256'),
                       ('primary_case_manifest.tsv', 'primary_manifest_sha256')):

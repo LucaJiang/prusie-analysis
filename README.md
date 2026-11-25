@@ -1,81 +1,71 @@
 # prusie manuscript analyses
 
-Citation metadata is in [CITATION.cff](CITATION.cff). The manuscript benchmark archive is version 1.0.0 (tag `analysis-v1.0.0`), separate from the benchmarked prusie 0.3.0 package. See [ARCHIVING.md](ARCHIVING.md) for archive scope, frozen-history notes and citation guidance.
+Citation metadata is provided in [CITATION.cff](CITATION.cff). See
+[ARCHIVING.md](ARCHIVING.md) for archive structure, reproduction workflows, and
+citation details (`analysis-v1.0.0`).
 
-This repository holds the code and measurement records behind the prusie
-manuscript. The manuscript compares [prusie](https://github.com/LucaJiang/prusie)
-0.3.0 with susieR 0.16.6 on 200 FinnGen R13 type 2 diabetes loci, 14,157 GTEx v11
-Whole Blood eGenes and six nested windows of one locus.
+This repository contains the benchmark workflows, measurement records, and
+figure- and table-generation code accompanying the manuscript comparing
+[prusie](https://github.com/LucaJiang/prusie) 0.3.0 with `susieR` 0.16.6 across
+200 FinnGen R13 type 2 diabetes (T2D) GWAS loci, 14,157 GTEx v11 Whole Blood
+*cis*-eQTL eGenes, and six nested variant windows of a single locus.
 
-You can redraw every figure and table from the records here without R,
-association data or new fits. Rerunning the fits themselves requires
-downloading the source data (see [Data access](#data-access)).
+All manuscript figures and summary tables can be regenerated directly from the
+archived measurement records in `03_results/`. Re-running the fine-mapping fits
+from scratch requires downloading the external source datasets (see
+[Data access](#data-access)).
 
 ## Results at a glance
 
-All timings use exclusive AMD EPYC 7742 nodes and one numerical thread. Each
-backend runs one warmup and three retained calls per case.
+All timings were measured on exclusive AMD EPYC 7742 nodes using a single
+numerical thread, with one warmup call and three retained timed calls per case
+and backend.
 
-| | GWAS | eQTL |
+| Metric | GWAS (200 loci) | eQTL (14,157 eGenes) |
 | --- | ---: | ---: |
-| Primary speed-up: summed susieR case medians / summed prusie case medians | 42.86× | 26.60× |
-| All-call cumulative speed-up: summed susieR time / summed prusie time | 49.20× | 26.58× |
-| Median of per-case ratios | 47.74× | 27.53× |
-| Median of per-case max \|Δα\| | 8.7 × 10⁻¹⁰ | 7.3 × 10⁻¹⁰ |
+| Primary speed-up (summed `susieR` case medians / summed `prusie` case medians) | 42.86× | 26.60× |
+| Cumulative speed-up across all retained calls | 49.20× | 26.58× |
+| Median of per-case speed-up ratios | 47.74× | 27.53× |
+| Median of per-case $\max |\Delta\alpha|$ | $8.7 \times 10^{-10}$ | $7.3 \times 10^{-10}$ |
 
-These ratios describe the evaluated cases. Complete-call time covers one
-`susie_rss` call on loaded arrays; it excludes imports, disk reads and LD
-construction. Peak memory is the whole backend process, including the
-interpreter, loaded inputs and all calls, not just the fit.
-
-Every case is kept, including the 224 eQTL genes where neither implementation
-converged within 100 iterations. Among these, the largest alpha difference is
-4.35 × 10⁻⁵. One converged eQTL gene has a PIP difference of 2.43 × 10⁻⁴,
-caused by a component sitting at the activity threshold; its alpha difference
-is 1.7 × 10⁻⁹. Credible-set membership is identical in every primary case.
-
-### What these data can and cannot support
-
-The GWAS fits pair an analysis sample of 486,019 (89,727 cases, 396,292
-controls) with LD from only 99 FIN reference individuals, so the LD matrices
-have rank at most 98. The eQTL fits use n = 800
-with LD from 525 EUR individuals. The results here are valid comparisons of
-runtime and numerical agreement on identical inputs. They are not biological
-fine-mapping conclusions.
-
-The exact LD column-class census covers all 200 GWAS loci and all 14,157 primary
-eQTL genes, including the 224 nonconverged eQTL cases. For eQTL, median G/p is
-0.5934 (IQR 0.5264–0.6586); 918 genes meet the fixed comparison stratum
-0.35 ≤ G/p < 0.45 and 2,000 ≤ p ≤ 6,000. G counts float64 columns exactly equal
-up to sign, with no tolerance; it is not matrix rank.
-
-These classes describe **locally prepared LD**. Raw LD hashes match the
-independently reconstructed Burgundy timing matrices in 0/14,157 eQTL cases.
-Historical runtime associations therefore do not establish identical equality
-classes in the timed matrices. The full census adds no fitting or timing runs.
-See [census provenance](03_results/ld_class_census_provenance.json) and
-[reproduction instructions](supplementary/README.md).
+- **Measurement boundaries:** Complete-call runtime measures a single
+  `susie_rss` call on preloaded arrays (excluding module imports, disk I/O, and
+  LD construction). Process peak memory records the high-water RSS of each
+  fresh backend worker across input loading, one warmup call, and three timed
+  calls.
+- **Numerical agreement:** All 200 GWAS loci and 14,157 eQTL eGenes are
+  included, including the 224 eQTL genes that reached the 100-iteration limit in
+  both implementations (maximum $|\Delta\alpha| = 4.35 \times 10^{-5}$). One
+  converged eQTL gene exhibits a PIP difference of $2.43 \times 10^{-4}$ due to
+  a component near the purity/activity boundary ($\max |\Delta\alpha| =
+  1.7 \times 10^{-9}$). Credible-set membership is identical between `prusie`
+  and `susieR` across all 14,357 primary cases.
+- **Sample sizes and LD column-class structure:** The GWAS analyses use
+  $n = 486,019$ ($89,727$ cases and $396,292$ controls) with in-sample/reference
+  LD estimated from 99 1000 Genomes FIN individuals; the eQTL analyses use
+  $n = 800$ with LD from 525 EUR individuals. Grouping float64 LD columns that
+  are identical up to sign yields $G$ exact equivalence classes per region. For
+  eQTL, the median $G/p$ is $0.5934$ (IQR $0.5264\text{--}0.6586$), with 918
+  genes in the comparison stratum $0.35 \le G/p < 0.45$ and
+  $2,000 \le p \le 6,000$.
 
 ## Redraw figures and tables
 
-You need Python 3.12. The architecture figure also needs Cairo and librsvg
-(`libcairo2` and `librsvg2-2` on Debian/Ubuntu).
+Regenerating the summary tables and figures requires Python 3.12. Rendering the
+software architecture diagram (`architecture.pdf`) also requires Cairo and
+`librsvg` (`libcairo2` and `librsvg2-2` on Debian/Ubuntu).
 
 ```sh
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r environment/requirements-level-a.txt
-make check     # recompute summaries and compare with 03_results/
-make all       # also write tables to build/tables/ and redraw the figures
+make check     # recompute summaries, verify agreement with 03_results/, and check SHA256 digests
+make all       # run make check, write tables to build/tables/, and render figures
 ```
 
-`make check` requires non-numeric values to match exactly and floating-point
-values to agree to a relative 10⁻¹², since BLAS kernels differ between CPUs. It
-also verifies the checksums of the records and archived scripts.
-It checks full census coverage, case identities and variant counts against the
-primary table and case manifest, including nonconverged cases.
-CI runs the same command. Redrawn figures can differ from the manuscript PDFs in
-fonts and pixels, but not in content.
+`make check` verifies exact equality for non-numeric fields, relative agreement
+within $10^{-12}$ for floating-point summaries across CPU/BLAS implementations,
+and SHA256 checksums for the archived records and scripts.
 
 | Manuscript item | Script in `04_figures_tables/` | Input in `03_results/` |
 | --- | --- | --- |
@@ -87,64 +77,55 @@ fonts and pixels, but not in content.
 | Fig. S6, peak memory | `make_memory_figure.py` | `benchmark_records.jsonl.gz` |
 | Nested windows | `make_supplement_figures.py` | `benchmark_windows.tsv` |
 | Full analysis report | `make_report_figure.py` | `report_snippets/` |
-| Dataset, timing, agreement and memory tables; numbers in the text | `summarize_benchmark.py`, `manuscript_numbers.py` | records, `primary_case_manifest.tsv`, `cs_membership.tsv` |
-| Per-iteration, memory-by-size, LD column-class and thread tables | `derived_analyses.py` | `benchmark_*.tsv`, `ld_class_census.tsv`, `thread_scaling.tsv` |
-| Fixed settings and software identities | — | `benchmark_manuscript_protocol.json` |
+| Dataset, timing, agreement, and memory tables; manuscript statistics | `summarize_benchmark.py`, `manuscript_numbers.py` | `benchmark_records.jsonl.gz`, `primary_case_manifest.tsv`, `cs_membership.tsv` |
+| Per-iteration, memory-by-size, LD column-class, and thread tables | `derived_analyses.py` | `benchmark_*.tsv`, `ld_class_census.tsv`, `thread_scaling.tsv` |
+| Benchmark settings and software identities | — | `benchmark_manuscript_protocol.json` |
 
-`manuscript_numbers.json` gives each number in the text at full precision.
-The susieR result for the 10,000-variant window comes from a ten-call replay
-(`window10000_retime.json`), because one original call stalled outside the
-solver. The original calls remain in the records.
+`manuscript_numbers.json` stores all summary statistics cited in the manuscript
+at full precision. For the 10,000-variant nested window, `benchmark_windows.tsv`
+uses the ten-call `susieR` replay in `window10000_retime.json` (Addressing a
+single stalled original call), while `benchmark_records.jsonl.gz` retains the
+initial three-call record.
 
-## Rerun the analyses
+## Rerun the analyses from source data
 
-1. Download the data below. Copy `config/example.yaml` and set the paths.
-2. Prepare the inputs with [`01_inputs/`](01_inputs/README.md). This covers locus
-   and gene selection, strict SNP QC, allele alignment and LD reconstruction
-   with PLINK.
-3. Run the paired benchmark with [`02_benchmark/`](02_benchmark/README.md). It
-   uses the prusie 0.3.0 wheel and the pinned susieR build described in
+1. Obtain the source datasets listed below. Copy `config/example.yaml` to
+   `config/local.yaml` and configure local paths.
+2. Prepare the benchmark inputs using [`01_inputs/`](01_inputs/README.md) (locus
+   and eGene selection, SNP quality control, allele alignment, and PLINK LD
+   construction).
+3. Execute the paired benchmark using [`02_benchmark/`](02_benchmark/README.md)
+   with the pinned `prusie` 0.3.0 and `susieR` 0.16.6 environments described in
    [`environment/`](environment/README.md).
-4. [`supplementary/`](supplementary/README.md) produces the LD column-class
-   census, credible-set membership, thread-scaling table and case manifest.
+4. Run [`supplementary/`](supplementary/README.md) to generate the LD
+   column-class census, credible-set membership comparisons, thread-scaling
+   table, and primary case manifest.
 
-`02_benchmark/archive/` holds the exact scripts and patches used for the
-published measurements, with checksums. For new runs, use the configurable
-scripts outside the archive.
-
-**What has been re-executed from this repository.** Locus and gene selection,
-reference sample lists and GENCODE TSS extraction have been rerun in full. The
-first two GWAS loci and first two eQTL genes have been rerun end to end:
-- The z-scores and variant order reproduced exactly.
-- The PLINK LD matched the published hashes.
-- The refitted alpha equalled the saved arrays.
-
-Chromosome-wide reference QC, the full benchmark campaign, the timing
-instrumentation build and the Slurm submission have not been re-executed from
-this repository.
+`02_benchmark/archive/` preserves the exact execution scripts, timing
+instrumentation patches, and SHA256 checksums from the manuscript benchmark
+campaign.
 
 ## Data access
 
-No association statistics, genotypes or LD matrices are included.
+Raw association statistics, individual-level genotypes, and derived LD matrices
+are not redistributed in this repository.
 
-- **FinnGen R13**, type 2 diabetes. Get it from
-  [FinnGen results access](https://www.finngen.fi/en/access_results). You must
-  register and accept the access conditions, including not attempting to
-  identify participants.
-- **GTEx v11**, Whole Blood cis-eQTL summary statistics (GENCODE 47). Get it from
-  the [GTEx Portal](https://gtexportal.org/home/downloads/adult-gtex/qtl). Under
-  the [GTEx Portal Data License](https://gtexportal.org/home/license), you must
-  acknowledge the source and record the date you downloaded the data.
-- **1000 Genomes**, GRCh38 high-coverage genotypes. Get it from
-  [IGSR](https://www.internationalgenome.org/data). Use is subject to the
-  [IGSR disclaimer](https://www.internationalgenome.org/IGSR_disclaimer/), the
-  [EMBL-EBI terms](https://www.ebi.ac.uk/about/terms-of-use/) and any
-  collection-specific conditions.
+- **FinnGen R13** (type 2 diabetes summary statistics): Available via
+  [FinnGen results access](https://www.finngen.fi/en/access_results) upon
+  registration and acceptance of the data-access terms.
+- **GTEx v11** (Whole Blood *cis*-eQTL summary statistics, GENCODE v47):
+  Available from the [GTEx Portal](https://gtexportal.org/home/downloads/adult-gtex/qtl)
+  under the [GTEx Portal Data License](https://gtexportal.org/home/license).
+- **1000 Genomes** (GRCh38 high-coverage phased genotypes): Available from
+  [IGSR](https://www.internationalgenome.org/data) under the
+  [IGSR disclaimer](https://www.internationalgenome.org/IGSR_disclaimer/) and
+  [EMBL-EBI terms of use](https://www.ebi.ac.uk/about/terms-of-use/).
 
-The published analyses used FinnGen and 1000 Genomes data obtained by
-16 October 2026 and GTEx data obtained by 18 October 2026.
+The manuscript analyses used FinnGen R13 and 1000 Genomes data downloaded on
+16 October 2026 and GTEx v11 data downloaded on 18 October 2026.
 
 ## License
 
-GPL-3.0-or-later; see [LICENSE](LICENSE). The archived susieR source files keep
-their BSD-3-Clause notice; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The analysis code in this repository is licensed under GPL-3.0-or-later; see
+[LICENSE](LICENSE). Archived `susieR` reference source files retain their
+BSD-3-Clause license; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

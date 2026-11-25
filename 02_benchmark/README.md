@@ -1,69 +1,67 @@
 # Paired R/Python benchmark
 
-`campaign.py` runs the frozen z/LD cases with prusie 0.3.0 and susieR 0.16.6
-(commit `8e56a8e038e989856d106d9ca5175cc664fea9d2`). Each case/backend uses a
-fresh process, one warmup and three retained complete calls. Inputs are loaded
-before the clock; garbage collection and export are outside it. Backends run
-sequentially within each case. The original seeded balanced order is frozen
-before selecting smoke cases. Independent cases may run concurrently.
+`campaign.py` executes the paired benchmark comparing `prusie` 0.3.0 and
+`susieR` 0.16.6 (commit `8e56a8e038e989856d106d9ca5175cc664fea9d2`). Each case
+and backend runs in a fresh process with one warmup call and three retained
+timed calls. Input arrays are preloaded before timing, and garbage collection
+and result serialization occur outside the timed span. Backends run sequentially
+within each case following a seeded balanced schedule (`seed = 20261028`).
 
-Prepare cases with [01_inputs](../01_inputs/README.md), fill the `benchmark`
-section in [example.yaml](../config/example.yaml), then run:
+After preparing the inputs with [`01_inputs/`](../01_inputs/README.md) and
+configuring the `benchmark` section in [`config/example.yaml`](../config/example.yaml),
+run:
 
 ```sh
 python 02_benchmark/make_manifest.py --config config/local.yaml
 python 02_benchmark/campaign.py --config config/local.yaml
 ```
 
-The manifest builder uses the published primary order and appends the six fixed
-nested windows. It checks z and variant-order bytes against their frozen hashes
-and preserves the full case parameters. For a four-case smoke with incomplete
-local inputs, use `make_manifest.py --allow-missing`, then select
-`--case-keys GWAS_00000,GWAS_00001,eQTL_00000,eQTL_00001` in `campaign.py`.
-Backend order is still frozen from the complete manifest before that selection.
+`make_manifest.py` orders the 14,357 primary cases and appends the six nested
+variant windows ($p \in \{500, 1000, 2000, 4000, 10000, 19221\}$ of
+`T2D_chr10_61277948_71054950`), verifying the z-score and variant-order SHA256
+digests against `03_results/primary_case_manifest.tsv`. To run a subset of
+locally prepared cases, build the manifest with `make_manifest.py --allow-missing`
+and pass `--case-keys` (for example,
+`--case-keys GWAS_00000,GWAS_00001,eQTL_00000,eQTL_00001`) to `campaign.py`.
 
-The case manifest is a JSON list. Each entry needs `case_key`, `panel`
-(`GWAS`, `eQTL` or `windows`) and `case_path`. Paths resolve relative to the
-manifest. A nested-window entry additionally supplies `window` and `kind`.
-Case files retain all original fitting parameters; neither driver filters,
-reorders nor changes associations. The harness writes final full alpha and
-PIP arrays, per-call timing and convergence, process high-water RSS and maximum
-absolute R/Python alpha differences. Alpha rows keep their original order.
-No component is excluded or permuted.
+## Manifest format and configuration
 
-The `python`, `rscript`, optional `r_build`, `cases_manifest`, `output_dir`,
-`r_libs`, `r_libs_user`, optional `primary_case_manifest` and optional `blas_probe` paths come from configuration.
-Relative paths resolve against that configuration. Output must be a new directory.
-Without a supplied probe, the harness builds `blas_probe.c` using `R CMD SHLIB`.
-The probe requires a C compiler, R development headers and Linux `libdl`.
-For a custom Rscript wrapper, set `r_build` to the matching `R` build executable.
-`r_libs` and `r_libs_user` may be lists of library directories. The default
-portable mode measures complete calls with the frozen released wheel. It does
-not report a fitting-stage time as if that instrumented wheel were installed.
+The case manifest is a JSON list where each entry specifies `case_key`, `panel`
+(`GWAS`, `eQTL`, or `windows`), and `case_path`, plus `window` and `kind` for
+nested-window entries. Both drivers use the fitting parameters stored in each
+`case.json` and export the final `alpha` and `pip` arrays, per-call runtimes,
+convergence status, process peak RSS, and maximum absolute R/Python `alpha`
+difference.
 
-The manuscript fitting-stage measurements used a timing-instrumented derivative
-of the frozen wheel, plus the guarded R timer in `fit_timer.R`. Enable
-`benchmark.instrumented: true` only with a separate build made using the exact
-[archived patch](archive/native_timing.patch). `stage_timer.py` requires the
-two native timing keys added by that patch and rejects an ordinary release
-wheel. No statistical operation is changed by the timing helpers. The R helper
-checks the installed function bodies against the pinned source excerpts.
-The patch build and fitting-stage instrumentation are not re-executed here.
+Configuration options in `benchmark` include `python`, `rscript`, optional
+`r_build`, `cases_manifest`, `output_dir`, `r_libs`, `r_libs_user`, optional
+`primary_case_manifest`, and optional `blas_probe`. If `blas_probe` is omitted,
+the harness compiles `blas_probe.c` via `R CMD SHLIB` (requiring a C compiler,
+R headers, and `libdl`).
 
-[protocol.json](protocol.json) records the portable measurement definitions.
-For the evaluated cases, the primary manuscript speed-up is the sum of per-case median susieR complete-call times divided by the sum of the corresponding prusie medians. The all-call cumulative ratio, median of per-case ratios and geometric mean ratio are separate summaries. The older `timing.headline` field in the portable protocol describes the all-call cumulative ratio and is preserved as historical metadata; see [ARCHIVING.md](../ARCHIVING.md). The manuscript includes all fixed cases, including iteration-limit fits and alpha discrepancies.
+## Fitting-stage timing instrumentation
 
-[archive/](archive/README.txt) preserves the execution archive for the reported
-measurements. Pre-campaign qualification and smoke records, which the manuscript
-does not report, were removed; `checksums.json` lists the remaining files. Eight published copies had subsequently
-redacted names, as that README explains. Their original bytes, recovered from
-Git history and verified against the retained hashes, are in
-[archive/as_run/](archive/as_run/README.md); unchanged files stay in the parent
-archive. `archive/as_run/protocol.json` preserves the original frozen protocol.
-The archive contains cluster-specific paths and operational controls for historical
-traceability. The portable drivers omit those controls and do not submit jobs.
-[slurm.sh](slurm.sh) is an editable single-node template; it has not been submitted.
+By default (`benchmark.instrumented: false`), the portable harness times
+complete `susie_rss` calls using the standard `prusie` 0.3.0 release wheel.
+To record same-call fitting-stage times in addition to complete-call times,
+build an instrumented `prusie` wheel with
+[`archive/native_timing.patch`](archive/native_timing.patch) and set
+`benchmark.instrumented: true`. When enabled, `stage_timer.py` records the
+native solver and result-construction spans in Python, while `fit_timer.R`
+verifies the installed `susieR` function bodies against the pinned sources in
+`archive/R_source/` and records the `susie_workhorse` fitting span in R.
 
-Local smoke execution and numerical differences are documented in the repository
-README. They are descriptive reproduction checks on four fixed cases; they do not
-replace the published complete-panel measurements.
+## Protocol and execution archive
+
+- [`protocol.json`](protocol.json) records the benchmark protocol parameters. As
+  described in [`ARCHIVING.md`](../ARCHIVING.md) and
+  [`03_results/README.md`](../03_results/README.md), the primary manuscript
+  speed-up is the ratio of summed per-case median complete-call times, whereas
+  the legacy `timing.headline` field in `protocol.json` refers to the cumulative
+  all-call ratio.
+- [`archive/`](archive/README.txt) and [`archive/as_run/`](archive/as_run/README.md)
+  preserve the exact scripts, patches, and environment manifests from the
+  manuscript cluster campaign, authenticated by `verify_archive.py` against
+  `checksums.json`.
+- [`slurm.sh`](slurm.sh) provides a single-node Slurm job template for cluster
+  execution.

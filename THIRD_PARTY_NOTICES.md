@@ -1,13 +1,14 @@
 # Third-party notices
 
-This analysis code is GPL-3.0-or-later; the full license is in LICENSE.
-No association statistics or individual genotypes are redistributed.
+The analysis code in this repository is licensed under GPL-3.0-or-later; see
+[LICENSE](LICENSE) for the full license text.
 
 ### susieR
 
 The archived R source files under `02_benchmark/archive/` are copies of
-[susieR 0.16.6](https://github.com/stephenslab/susieR/tree/8e56a8e038e989856d106d9ca5175cc664fea9d2),
-commit `8e56a8e038e989856d106d9ca5175cc664fea9d2`, under BSD-3-Clause:
+[susieR 0.16.6](https://github.com/stephenslab/susieR/tree/8e56a8e038e989856d106d9ca5175cc664fea9d2)
+at commit `8e56a8e038e989856d106d9ca5175cc664fea9d2`, distributed under the
+BSD-3-Clause license:
 
 Copyright (c) 2017-2022, Gao Wang, Peter Carbonetto, Yuxin Zou, Kaiqian Zhang,
 Matthew Stephens.
@@ -38,20 +39,18 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-
 ## R optimizer attribution
 
-The archived native timing patch is part of prusie's GPL-3.0-or-later source.
-The prusie dependency adapts R's `optimize.c` under GPL-2.0-or-later:
+The archived native timing patch (`02_benchmark/archive/native_timing.patch`)
+applies to `prusie` (GPL-3.0-or-later), which adapts Brent's univariate
+optimization routine from R's `optimize.c` under GPL-2.0-or-later:
 Copyright (C) 1995, 1996 Robert Gentleman and Ross Ihaka;
 Copyright (C) 2003–2004 The R Foundation;
 Copyright (C) 1998–2023 The R Core Team.
-The optimizer implementation and compiled package wheel are not redistributed
-in this analysis repository. Their notices remain in the package distribution.
 
-## Data providers and plotting libraries
+## Data providers and external packages
 
-FinnGen, GTEx and IGSR data access and attribution are described in README.md.
-NumPy, SciPy, Matplotlib, Pillow, PyYAML, pandas, PyArrow, pysam and pgenlib
-are installed dependencies, not vendored source or bundled binaries.
-The GPL license text and the susieR BSD notice are retained in full.
+Data access terms and attributions for FinnGen, GTEx, and IGSR 1000 Genomes are
+documented in [README.md](README.md). Python and system dependencies (NumPy,
+SciPy, Matplotlib, Pillow, PyYAML, pandas, PyArrow, pysam, and pgenlib) are
+installed via standard package managers as listed in `environment/`.

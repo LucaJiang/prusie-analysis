@@ -21,12 +21,7 @@ def _table(path: Path) -> list[dict]:
 
 def select_samples(source_psam: Path, pedigree: Path, corrected_psam: Path,
                    exclusions: Path, kinship: Path, output: Path) -> dict:
-    """Use the official population roster and release-specific KING exclusions.
-
-    All metadata joins are exact sample-ID joins. The precomputed removal list
-    is checked against the complete published first/second-degree pair table;
-    checking founders is deliberately insufficient.
-    """
+    """Select unrelated FIN and EUR reference samples using official IGSR population labels, pedigree metadata, and first-/second-degree KING exclusions."""
     output.mkdir(parents=True, exist_ok=True)
     samples = _table(source_psam)
     official = {r["SampleID"]: r for r in _table(pedigree)}
@@ -115,12 +110,7 @@ def variant_class(ref: str, alt: str) -> str:
     return "long_or_complex_allele"
 
 def normalize_variant(pos: int, ref: str, alt: str, sequence: str) -> tuple[int, str, str]:
-    """Return a left-normalized biallelic variant, checking 1-based REF first.
-
-    The source is already left normalized, but this independently verifies and
-    canonicalizes each retained short indel. No strand/swap repair is applied to
-    a source REF mismatch. The caller retains original fields in the QC ledger.
-    """
+    """Return a left-normalized biallelic variant after verifying the 1-based reference allele against the FASTA sequence."""
     if pos < 1 or pos - 1 + len(ref) > len(sequence):
         raise ValueError("coordinate_out_of_bounds")
     if sequence[pos - 1:pos - 1 + len(ref)].upper() != ref:
@@ -146,7 +136,7 @@ def normalize_variant(pos: int, ref: str, alt: str, sequence: str) -> tuple[int,
     return pos, ref, alt
 
 def census_pvar(source: Path, output: Path, status_path: Path | None = None) -> dict:
-    """Stream the complete PVAR once; index every autosomal row without filtering."""
+    """Stream the source PVAR once and index all autosomal rows by chromosome."""
     import pysam
 
     output.mkdir(parents=True, exist_ok=True)
